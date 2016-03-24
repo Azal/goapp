@@ -1,0 +1,69 @@
+<div class="main_container">
+  <div class="first_column">
+    <h1>Angular 2: Go Editor</h1>
+
+    <h3>Board Tools</h3>
+
+    <button class="btn-blue" (click)="setStyle('free')">Free style</button>
+    <button class="btn-blue" (click)="setStyle('game')">Game style</button>
+    <button class="btn-blue" (click)="changeColors()">Change colors</button>
+    <button class="btn-blue" (click)="resetBoard()">Reset</button>
+    <div class="clearfix"></div>
+
+    <button class="btn-blue" *ngIf="board.getStyle() === 'free'"
+            (click)="setTool('black_stone')">Black Stone</button>
+    <button class="btn-blue" *ngIf="board.getStyle() === 'free'"
+            (click)="setTool('white_stone')">White Stone</button>
+    <button class="btn-blue" *ngIf="board.getStyle() === 'free'"
+            (click)="setTool('remove_stone')">Remove Stone</button>
+    <div class="clearfix"></div>
+
+    <button class="btn-blue" (click)="playExampleSequence()">Play Example Sequence</button>
+
+    <h3>Game Info</h3>
+
+    <p>Name: <span class="info">{{ board.getName() }}</span></p>
+    <p>ID: <span class="info">{{ board.getID() }}</span></p>
+    <p>Size: <span class="info">{{ board.getSize() }}</span></p>
+    <p>Style: <span class="info">{{ board.getStyle() }}</span></p>
+    <p>#moves: <span class="info">{{ board.getMoves() }}</span></p>
+    <p>Hover Position: <span class="info">{{ "(" + boardHoverPosition[0] + ', ' +  boardHoverPosition[1] + ")"}}</span></p>
+
+    <h3>Board represetation</h3>
+
+    <div [innerHTML]="board.toString()"
+          id="board_representation">
+    </div>
+  </div>
+
+  <div class="second_column">
+    <div class="board_container">
+      <div class="board {{ 'size_' + board.getSize() }}">
+        <div *ngFor="#line_number of boardIterator; #line_index = index" id="{{ line_index }}" class="line">
+          <span *ngFor="#cell_number of boardIterator;
+                        #cell_index = index"
+                (click)="onCellClick(cell_index, line_index)"
+                (mouseover)="onCellHover(cell_index, line_index)"
+                [class.empty]="board.isEmpty(cell_index, line_index)"
+                [class.black_hover]="board.isEmpty(cell_index, line_index) &&
+                                   ((board.isGameStyleSetted() && board.isBlackTurn())
+                                 || (board.isFreeStyleSetted() && board.isBlackStoneToolSetted()))"
+                [class.white_hover]="board.isEmpty(cell_index, line_index) &&
+                                   ((board.isGameStyleSetted() && board.isWhiteTurn())
+                                 || (board.isFreeStyleSetted() && board.isWhiteStoneToolSetted()))"
+                id="{{ line_index + '_' + cell_index }}"
+                class="cell">
+            <span [class.black]="board.getPosition(cell_index, line_index) !== 0
+                              && board.getPosition(cell_index, line_index) === 1"
+                  [class.white]="board.getPosition(cell_index, line_index) !== 0
+                              && board.getPosition(cell_index, line_index) === 2"
+                  class="stone">
+            </span>
+          </span>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="clearfix"></div>
