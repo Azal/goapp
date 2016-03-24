@@ -1,0 +1,72 @@
+.board_container {
+  width: 100%;
+  margin: 0 auto;
+  margin-top: 2px;
+  margin-bottom: 20px;
+}
+
+.board {
+  margin: 0 auto;
+  width: 798px;
+  height: 798px;
+  border: 1px black solid;
+  border-radius: 3px;
+  background-image: url(../../assets/images/bg-board.png);
+  background-repeat: repeat-y;
+
+  .line {
+    display: block;
+    height: 42px;
+  }
+
+  .cell {
+    display: inline-block;
+    width: 42px;
+    height: 42px;
+  }
+
+  .cell .stone {
+    display: block;
+    margin: auto;
+    width: 42px;
+    height: 42px;
+    overflow: hidden;
+  }
+
+  .cell.empty {
+    cursor: pointer;
+  }
+
+  /*.cell.empty {
+    &:hover .stone {
+      background: url(../../assets/images/stones-sprite-smallest.png) -6px -6px;
+      opacity: 0.6;
+    }
+  }*/
+
+  .cell .black.stone {
+    background: url(../../assets/images/stones-sprite-smallest.png) -5px -5px;
+    background-size: 100px 250px;
+  }
+
+  .cell .white.stone {
+    background: url(../../assets/images/stones-sprite-smallest.png) -55px -55px;
+    background-size: 100px 250px;
+  }
+
+  .cell.empty.black_hover {
+    &:hover .stone {
+      background: url(../../assets/images/stones-sprite-smallest.png) -5px -5px;
+      background-size: 100px 250px;
+      opacity: 0.6;
+    }
+  }
+
+  .cell.empty.white_hover {
+    &:hover .stone {
+      background: url(../../assets/images/stones-sprite-smallest.png) -55px -55px;
+      background-size: 100px 250px;
+      opacity: 0.6;
+    }
+  }
+}
