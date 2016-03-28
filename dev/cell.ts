@@ -14,14 +14,16 @@ export class Cell {
   private _liberties: number;
   private _group_id: number;
   private _parent_board: Board;
+  private _mark_to_remove: boolean;
 
   constructor(x: number, y: number, board: Board) {
     this._x = x;
     this._y = y;
+    this._parent_board = board;
     this._state = 0;
     this._liberties = -1;
     this._group_id = 0;
-    this._parent_board = board;
+    this._mark_to_remove = false;
   }
 
   /** Getters and Setters */
@@ -34,7 +36,13 @@ export class Cell {
   }
 
   public getLiberties(): number {
-    return this._liberties;
+    // return this._liberties;
+
+    if (this.isEmpty()) {
+      return -1;
+    } else {
+      return this._parent_board.getCellNeighbors(this).filter(_cell => _cell.isEmpty()).length;
+    }
   }
 
   public getGroupId(): number {
@@ -53,9 +61,17 @@ export class Cell {
     this._group_id = id;
   }
 
+  public markToRemove(): void {
+    this._mark_to_remove = true;
+  }
+
+  public unmarkToRemove(): void {
+    this._mark_to_remove = false;
+  }
+
   /** Helpers */
   public playStone(color: string, group_id: number): void {
-    console.log("Playing " + color + " stone at: (" + this._x + "," + this._y + ")");
+    // console.log("Playing " + color + " stone at: " + this.toString("coods"));
     var board: Board = this._parent_board;
 
     /* Actual play */
@@ -66,63 +82,81 @@ export class Cell {
     }
     this._group_id = group_id;
 
-    var neighborCells: Cell[] = board.getCellNeighbors(this._x, this._y);
+    var neighborCells: Cell[] = board.getCellNeighbors(this);
     var friendCells: Cell[] = neighborCells.filter(_cell => _cell.hasSameColorWith(this));
     var enemyCells: Cell[] = neighborCells.filter(_cell => !(_cell.isEmpty() || _cell.hasSameColorWith(this)));
-
-    console.log(board);
-    console.log(this);
 
     var defaultLiberties: number = neighborCells.length; /* It changes if it is a corner, border or center cell */
     var newLiberties: number = defaultLiberties - enemyCells.length;
     var visitedGroupsIds: number[] = [];
     var currentGroupId: number;
+    var response: boolean;
+
+    /* Removing enemy stones first! */
+    for (var enemyCell of enemyCells) {
+      response = board.floodfill(enemyCell);
+
+      if (response) {
+        board.removeAllMarkedToRemoveCells();
+      } else {
+        board.cleanAllMarkedToRemove();
+      }
+    }
+
+    /* Removing friendly stones */
+    response = board.floodfill(this);
+
+    if (response) {
+      board.removeAllMarkedToRemoveCells();
+    } else {
+      board.cleanAllMarkedToRemove();
+    }
 
     /* Update liberties of friend neighbor groups */
-    for (var neighborCell of friendCells) {
-      currentGroupId = neighborCell.getGroupId();
+    // for (var neighborCell of friendCells) {
+    //   currentGroupId = neighborCell.getGroupId();
 
-      if (visitedGroupsIds.indexOf(currentGroupId) > -1) {
-        newLiberties -= 1;
-      } else {
-        newLiberties = neighborCell.getLiberties() + newLiberties - 2;
+    //   if (visitedGroupsIds.indexOf(currentGroupId) > -1) {
+    //     newLiberties -= 1;
+    //   } else {
+    //     newLiberties = neighborCell.getLiberties() + newLiberties - 2;
 
-        /* Check shared liberties with the other stones of this neighbord group */
-        var sharedAmount: number = this.shareLibertiesWithGroupById(neighborCell.getGroupId());
-        if (sharedAmount > 0) {
-          newLiberties -= sharedAmount;
-        }
+    //     /* Check shared liberties with the other stones of this neighbord group */
+    //     var sharedAmount: number = this.shareLibertiesWithGroupById(neighborCell.getGroupId());
+    //     if (sharedAmount > 0) {
+    //       newLiberties -= sharedAmount;
+    //     }
 
-        /* Check shared liberties with already checked neighbors */
-        for (var visitedCell of friendCells.filter(_cell => visitedGroupsIds.indexOf(_cell.getGroupId()) > -1)) {
-          if (neighborCell.shareLibertiesWith(visitedCell)) {
-            newLiberties -= 1;
-          }
-        }
+    //     /* Check shared liberties with already checked neighbors */
+    //     for (var visitedCell of friendCells.filter(_cell => visitedGroupsIds.indexOf(_cell.getGroupId()) > -1)) {
+    //       if (neighborCell.shareLibertiesWith(visitedCell)) {
+    //         newLiberties -= 1;
+    //       }
+    //     }
 
-        visitedGroupsIds.push(currentGroupId);
-      }
-    }
+    //     visitedGroupsIds.push(currentGroupId);
+    //   }
+    // }
 
     /* Update liberties of enemy neighbor groups */
-    visitedGroupsIds = [];
-    var groupsForRestore: Cell[] = [];
-    var restore: boolean;
+    // visitedGroupsIds = [];
+    // var groupsForRestore: Cell[] = [];
+    // var restore: boolean;
 
-    for (var neighborCell of enemyCells) {
-      currentGroupId = neighborCell.getGroupId();
+    // for (var neighborCell of enemyCells) {
+    //   currentGroupId = neighborCell.getGroupId();
 
-      if (!(visitedGroupsIds.indexOf(currentGroupId) > -1)) {
-        visitedGroupsIds.push(currentGroupId);
+    //   if (!(visitedGroupsIds.indexOf(currentGroupId) > -1)) {
+    //     visitedGroupsIds.push(currentGroupId);
 
-        if (neighborCell.getLiberties() - 1 === 0) {
-          restore = true;
-          groupsForRestore = board.getCellNeighbors(neighborCell._x, neighborCell._y);
-        }
+    //     if (neighborCell.getLiberties() - 1 === 0) {
+    //       restore = true;
+    //       groupsForRestore = board.getCellNeighbors(neighborCell);
+    //     }
 
-        board.setAllCellsWithIdToLiberties(currentGroupId, neighborCell.getLiberties() - 1);
-      }
-    }
+    //     board.setAllCellsWithIdToLiberties(currentGroupId, neighborCell.getLiberties() - 1);
+    //   }
+    // }
 
     /* Update groups information */
     for (var neighborCell of neighborCells) {
@@ -131,26 +165,29 @@ export class Cell {
       }
     }
 
-    board.setAllCellsWithIdToLiberties(this.getGroupId(), newLiberties);
+    // board.setAllCellsWithIdToLiberties(this.getGroupId(), newLiberties);
 
     /* Restore liberties if necessary */
-    var restoreGroupsIds: number[] = [];
+    // var restoreGroupsIds: number[] = [];
 
-    if (restore) {
-      console.log(groupsForRestore);
+    // if (restore) {
+    //   console.log(groupsForRestore);
 
-      for (var cell of groupsForRestore) {
-        if (!(restoreGroupsIds.indexOf(cell.getGroupId()) > -1)) {
-          visitedGroupsIds.push(cell.getGroupId());
+    //   for (var cell of groupsForRestore) {
+    //     if (!(restoreGroupsIds.indexOf(cell.getGroupId()) > -1)) {
+    //       visitedGroupsIds.push(cell.getGroupId());
 
-          board.setAllCellsWithIdToLiberties(cell.getGroupId(), cell.getLiberties() + 1);
-        }
-      }
-    }
+    //       board.setAllCellsWithIdToLiberties(cell.getGroupId(), cell.getLiberties() + 1);
+    //     }
+    //   }
+    // }
   }
 
   public removeStone(): void {
     this._state = 0;
+    this._liberties = -1;
+    this._group_id = 0;
+    this._mark_to_remove = false;
   }
 
   public changeColor(): void {
@@ -171,6 +208,10 @@ export class Cell {
 
   public isEmpty(): boolean {
     return this._state === 0;
+  }
+
+  public isMarkedToRemove(): boolean {
+    return this._mark_to_remove === true;
   }
 
   public hasStone(): boolean {
@@ -219,19 +260,23 @@ export class Cell {
     this._state = 0;
     this._liberties = -1;
     this._group_id = 0;
+    this._mark_to_remove = false;
   }
 
   /** String representation of a Cell */
   public toString(style?: string): string {
     var string_style: string = style || "short";
 
+    if (string_style === "coords") {
+      return "(" + this._x + "," + this._y + ")";
+    }
+
     if (string_style === "long") {
       return "(" + this._x + "," + this._y + ") '" + this._state + "' - '" +  this._liberties + "'";
     }
 
     if (string_style === "short") {
-      // return "(" + this._liberties + "," + this._group_id + ")";
-      return this._liberties + "," + this._group_id;
+      return (this._mark_to_remove ? "R" : "-") + "," + this._group_id;
     }
   }
 }

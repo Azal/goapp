@@ -7,9 +7,10 @@ import {Board} from "../models/Board";
 })
 
 export class BoardComponent {
-  board_style: string = "game";
+  board_style: string = "free";
+  board_tool: string = "black_stone";
   board_size: number = 19;
-  board: Board = new Board("Go Board", this.board_size, this.board_style);
+  board: Board = new Board("Go Board", this.board_size, this.board_style, this.board_tool);
   boardIterator: number[] = this.board.getIterator();
   boardHoverPosition: [number, number] = [-1, -1];
 

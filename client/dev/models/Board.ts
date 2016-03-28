@@ -7,19 +7,19 @@ export class Board {
   private _id: number;
   private _current_turn: string;
   private _style: string; /* free or game */
-  private _free_tool: string;
+  private _free_tool: string; /* black_stone, white_stone or remove_stone */
   private _size: number;
   private _moves: number;
   private _board: Cell[][];
   // private _group_ids: number[];
   private _group_id_count: number;
 
-  constructor(name: string, size?: number, style?: string) {
+  constructor(name: string, size?: number, style?: string, tool?: string) {
     this._name = name;
     this._id = Math.floor(Math.random() * 9999) + 1000;
     this._current_turn = "black";
     this._style = style || "game";
-    this._free_tool = "";
+    this._free_tool = tool || "black_stone";
     this._size = size || 19;
     this._moves = 0;
     this._board = [];
@@ -35,6 +35,8 @@ export class Board {
         this._board[i][j] = new Cell(i, j, this);
       }
     }
+
+    console.log(this);
   }
 
   /** Getters and Setters */
@@ -67,8 +69,10 @@ export class Board {
       return this._board[x][y];
     }
 
-    public getCellNeighbors(x: number, y: number): Cell[] {
+    public getCellNeighbors(cell: Cell): Cell[] {
       var neighbors: Cell[] = [];
+      var x: number = cell.getPosX(),
+          y: number = cell.getPosY();
 
       if (0 < x && x < 18) {
         if (0 < y && y < 18) {
@@ -161,6 +165,24 @@ export class Board {
     }
   }
 
+  /* Floodfill implementation setted for removal of captured stones */
+  public floodfill(cell: Cell): boolean {
+    if (cell.getLiberties() === 0) {
+      var response: boolean = true;
+      cell.markToRemove();
+
+      for (var friendCell of this.getCellNeighbors(cell).filter(_cell => _cell.hasSameColorWith(cell))) {
+        if (! friendCell.isMarkedToRemove()) {
+          response = response && this.floodfill(friendCell);
+        }
+      }
+
+      return response;
+    } else {
+      return false;
+    }
+  }
+
   /** Remove a stone from the Board */
   public removeFrom(x: number, y: number): void {
     this._board[x][y].removeStone();
@@ -182,6 +204,30 @@ export class Board {
     this._free_tool = "";
     this._style = "game";
     this._moves = 0;
+  }
+
+  /** Remove all marked stones */
+  public removeAllMarkedToRemoveCells(): void {
+    var i: number, j: number;
+
+    for (i = 0; i < this._size; ++i) {
+      for (j = 0; j < this._size; ++j) {
+        if (this._board[i][j].isMarkedToRemove()) {
+          this._board[i][j].removeStone();
+        }
+      }
+    }
+  }
+
+  /** Clean all marked stones from removal state */
+  public cleanAllMarkedToRemove(): void {
+    var i: number, j: number;
+
+    for (i = 0; i < this._size; ++i) {
+      for (j = 0; j < this._size; ++j) {
+        this._board[i][j].unmarkToRemove();
+      }
+    }
   }
 
   /** Play a sequence */
