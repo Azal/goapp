@@ -1,0 +1,35 @@
+<div class="main_container">
+  <div class="first_column">
+    <h1>Angular 2: Sequence Tree</h1>
+
+    <h3>Tools</h3>
+    X: <input [(ngModel)]="currentX">
+    Y: <input [(ngModel)]="currentY">
+    Stone:
+    <select [(ngModel)]="currentStone">
+      <option value="1">Black</option>
+      <option value="2">White</option>
+    </select>
+    <div class="clearfix"></div>
+
+    <button class="btn-blue" *ngIf="allElementsDefined()" (click)="addGameSequence();">Add Game Sequence</button>
+    <div class="clearfix"></div>
+
+    Sequence Key: <input [(ngModel)]="currentKey">
+    <button class="btn-blue" *ngIf="sequenceKeyDefined()" (click)="searchKey();">Set current node</button>
+    <button class="btn-blue" *ngIf="sequenceKeyDefined()" (click)="addGameSequenceToCurrent();">Add Game Sequence To Current</button>
+
+    <span (ngModel)="searchResult"></span>
+    <div class="clearfix"></div>
+
+    <h3>Game Info</h3>
+
+    <p>Current turn: <span class="info">{{ tree.getCurrentTurn() }}</span></p>
+    <p>Current position: <span class="info">{{ tree.getCurrentTurn() }}</span></p>
+
+    <h3>Tree represetation</h3>
+
+    <div id="tree_representation" [innerHTML]="tree.toString()"></div>
+  </div>
+</div>
+<div class="clearfix"></div>
