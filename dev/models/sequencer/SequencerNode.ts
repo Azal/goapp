@@ -7,7 +7,7 @@ import {SequencerKey} from "./SequencerKey";
 export class SequencerNode implements GenericNode<SequencerData, SequencerNode>, Keyable, Printable {
   _data: SequencerData;
   _parent: SequencerNode;
-  _nodes: SequencerNode[];
+  _nodes: Object = {};
   protected _key: SequencerKey;
 
   constructor(data?: SequencerData) {
@@ -15,7 +15,6 @@ export class SequencerNode implements GenericNode<SequencerData, SequencerNode>,
       this._data = data;
       this._key = new SequencerKey(data.getKey());
     }
-    this._nodes = [];
   }
 
   public set parent(parent: SequencerNode) {
@@ -51,26 +50,40 @@ export class SequencerNode implements GenericNode<SequencerData, SequencerNode>,
   }
 
   public addChild(child: SequencerNode): SequencerNode {
+    let childTurn = child.getTurn();
     if (!this._data) {
-      this.copyNode(child);
-      return this;
+      if (childTurn === 1) {
+        this.copyNode(child);
+        return this;
+      } else {
+        return null;
+      }
     }
-
     let node = this._nodes[child.getKey()];
+    let childKey = child.getKey();
 
-    if (node) {
+    if (node && node.getKey() === childKey) {
       return node;
     } else {
       let turn = this.getTurn();
 
       // Node must be added as a child
-      if (this.getTurn() + 1 === child.getTurn()) {
-        this._nodes[child.getKey()] = child;
+      if (turn + 1 === childTurn) {
+        this._nodes[childKey] = child;
         child.parent = this;
         return child;
+      } else {
+        for (let key in this._nodes) {
+          let childNode = this._nodes[key];
+          if (childNode) {
+            let result = childNode.addChild(child);
+            if (result) {
+              return result;
+            }
+          }
+        }
       }
     }
-
     return null;
   }
 
@@ -81,7 +94,8 @@ export class SequencerNode implements GenericNode<SequencerData, SequencerNode>,
       this._nodes[child.getKey()] = undefined;
       return true;
     }
-    for (let node of this._nodes) {
+    for (let key in this._nodes) {
+      let node = this._nodes[key];
       if (node.removeChild(child)) {
         return true;
       }
@@ -93,7 +107,8 @@ export class SequencerNode implements GenericNode<SequencerData, SequencerNode>,
     if (this.getKey() === key) {
       return this;
     }
-    for (let node of this._nodes) {
+    for (let key in this._nodes) {
+      let node = this._nodes[key];
       if (node.searchChild(key)) {
         return node;
       }
@@ -102,7 +117,11 @@ export class SequencerNode implements GenericNode<SequencerData, SequencerNode>,
   }
 
   public getKey(): string {
-    return this._key.toString();
+    if (this._key) {
+      return this._key.toString();
+    } else {
+      return "";
+    }
   }
 
   public setKey(key: string): void {
@@ -114,22 +133,22 @@ export class SequencerNode implements GenericNode<SequencerData, SequencerNode>,
     return this._data.turn;
   }
 
-  // @TODO
   public toString(): string {
     if (this._data) {
-      let strNode = this._data.toString() + "\n\t";
-      for (let node of this._nodes) {
-        console.log(node.getKey());
+      let strNode = this._data.toString() + "<br/>[";
+      for (let key in this._nodes) {
+        let node = this._nodes[key];
+        let str = node.getKey();
         strNode = strNode + node.toString();
       };
-      return strNode;
+      return strNode + "]";
     } else {
-      console.log("e");
       return "";
     }
   }
 
-  // @TODO
   print(): void {
+    console.log(this.toString());
   }
+
 }

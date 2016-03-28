@@ -8,10 +8,12 @@ import {SequencerTree} from "../models/sequencer/SequencerTree";
 
 export class SequenceTreeComponent {
   tree = new SequencerTree();
+  currentTurn: string = "";
   currentX: string = "";
   currentY: string = "";
   currentStone: string = "";
   currentKey: string = "";
+  searchResult: string = "";
 
   public allElementsDefined(): boolean {
     return (this.currentX.length > 0) && (this.currentY.length > 0) && (this.currentStone.length > 0);
@@ -22,10 +24,22 @@ export class SequenceTreeComponent {
   }
 
   public addGameSequence() {
-    this.tree.addGameSequence(parseInt(this.currentX), parseInt(this.currentY), parseInt(this.currentStone));
+    if (this.currentTurn.length > 0) {
+      this.tree.addFreeGameSequence(parseInt(this.currentTurn), parseInt(this.currentX), parseInt(this.currentY), parseInt(this.currentStone));
+    } else {
+      this.tree.addGameSequence(parseInt(this.currentX), parseInt(this.currentY), parseInt(this.currentStone));
+    }
   }
 
   public searchKey() {
-    console.log(this.tree.searchChild(this.currentKey).toString());
+    console.log("Searching by: " + this.currentKey);
+    let result = this.tree.searchChild(this.currentKey);
+    console.log(result);
+
+    if (result) {
+      this.searchResult = result.toString();
+    } else {
+      this.searchResult = "";
+    }
   }
 }

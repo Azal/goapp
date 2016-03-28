@@ -4,7 +4,7 @@ export class GlobalKey {
   constructor(public guid: string) {
     this._guid = guid;
   }
-  public ToString(): string {
+  public toString(): string {
     return this.guid;
   }
   // Must be static member

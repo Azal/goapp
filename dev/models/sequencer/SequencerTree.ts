@@ -53,17 +53,16 @@ export class SequencerTree implements GenericTree<SequencerNode>, Printable {
     return this._head.searchChild(key);
   }
 
-  // @TODO
   toString(): string {
     if (this._head) {
-      return "head:\n" + this._head.toString();
+      return "tree:<br/>" + this._head.toString();
     } else {
       return "";
     }
   }
 
-  // @TODO
   print(): void {
+    console.log(this.toString());
   }
 
   /* END Interface methods */
@@ -87,6 +86,22 @@ export class SequencerTree implements GenericTree<SequencerNode>, Printable {
       this._currentNode = addedNode;
       this._turn = currentTurn;
 
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  public addFreeGameSequence(currentTurn: number, x: number, y: number, stoneNumber: number): boolean {
+    if (currentTurn < 2) {
+      return false;
+    }
+    let stone: Stone = StoneMaker.makeNew(stoneNumber);
+    let data = new SequencerData(currentTurn, x, y, stone);
+    let node = new SequencerNode(data);
+    let addedNode = this._head.addChild(node);
+
+    if (addedNode) {
       return true;
     } else {
       return false;
