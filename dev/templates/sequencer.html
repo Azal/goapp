@@ -3,8 +3,6 @@
     <h1>Angular 2: Sequence Tree</h1>
 
     <h3>Tools</h3>
-
-    Turn: <input [(ngModel)]="currentTurn">
     X: <input [(ngModel)]="currentX">
     Y: <input [(ngModel)]="currentY">
     Stone:
@@ -17,9 +15,9 @@
     <button class="btn-blue" *ngIf="allElementsDefined()" (click)="addGameSequence();">Add Game Sequence</button>
     <div class="clearfix"></div>
 
-
     Sequence Key: <input [(ngModel)]="currentKey">
-    <button class="btn-blue" *ngIf="sequenceKeyDefined()" (click)="searchKey();">Search for node</button>
+    <button class="btn-blue" *ngIf="sequenceKeyDefined()" (click)="searchKey();">Set current node</button>
+    <button class="btn-blue" *ngIf="sequenceKeyDefined()" (click)="addGameSequenceToCurrent();">Add Game Sequence To Current</button>
 
     <span (ngModel)="searchResult"></span>
     <div class="clearfix"></div>

@@ -8,7 +8,6 @@ import {SequencerTree} from "../models/sequencer/SequencerTree";
 
 export class SequenceTreeComponent {
   tree = new SequencerTree();
-  currentTurn: string = "";
   currentX: string = "";
   currentY: string = "";
   currentStone: string = "";
@@ -24,19 +23,37 @@ export class SequenceTreeComponent {
   }
 
   public addGameSequence() {
-    if (this.currentTurn.length > 0) {
-      this.tree.addFreeGameSequence(parseInt(this.currentTurn), parseInt(this.currentX), parseInt(this.currentY), parseInt(this.currentStone));
-    } else {
-      this.tree.addGameSequence(parseInt(this.currentX), parseInt(this.currentY), parseInt(this.currentStone));
+    let result = this.tree.addGameSequence(parseInt(this.currentX), parseInt(this.currentY), parseInt(this.currentStone));
+    if (result) {
+      let newStone = parseInt(this.currentStone);
+      if (newStone === 1) {
+        newStone = 2;
+      } else {
+        newStone = 1;
+      }
+      this.currentStone = "" + newStone;
+    }
+  }
+
+  public addGameSequenceToCurrent() {
+    let result = this.tree.addFreeGameSequence(this.currentKey, parseInt(this.currentX), parseInt(this.currentY), parseInt(this.currentStone));
+    if (result) {
+      let newStone = parseInt(this.currentStone);
+      if (newStone === 1) {
+        newStone = 2;
+      } else {
+        newStone = 1;
+      }
+      this.currentKey = this.tree.currentNode.getKey();
+      this.currentStone = "" + newStone;
     }
   }
 
   public searchKey() {
     console.log("Searching by: " + this.currentKey);
     let result = this.tree.searchChild(this.currentKey);
-    console.log(result);
-
     if (result) {
+      console.log(result.data.toString());
       this.searchResult = result.toString();
     } else {
       this.searchResult = "";

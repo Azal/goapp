@@ -9,12 +9,18 @@ import {StoneMaker} from "../StoneMaker";
 export class SequencerTree implements GenericTree<SequencerNode>, Printable {
   _head: SequencerNode;
   _currentNode: SequencerNode;
+  _accessor: Object;
   private _turn: number;
 
   constructor() {
     this._head = new SequencerNode();
     this._currentNode = this._head;
     this._turn = 0;
+    this._accessor = {};
+  }
+
+  public get currentNode(): SequencerNode {
+    return this._currentNode;
   }
 
   /* BEGIN Interface methods */
@@ -50,7 +56,14 @@ export class SequencerTree implements GenericTree<SequencerNode>, Printable {
   }
 
   public searchChild(key: string): SequencerNode {
-    return this._head.searchChild(key);
+    let data = new SequencerData();
+    data.setKey(key);
+
+    if (!this._accessor[key]) {
+      return this._head.searchChild(data);
+    } else {
+      return this._accessor[key];
+    }
   }
 
   toString(): string {
@@ -85,23 +98,28 @@ export class SequencerTree implements GenericTree<SequencerNode>, Printable {
     if (addedNode) {
       this._currentNode = addedNode;
       this._turn = currentTurn;
-
+      this._accessor[addedNode.getKey()] = addedNode;
       return true;
     } else {
       return false;
     }
   }
 
-  public addFreeGameSequence(currentTurn: number, x: number, y: number, stoneNumber: number): boolean {
-    if (currentTurn < 2) {
+  public addFreeGameSequence(key: string, x: number, y: number, stoneNumber: number): boolean {
+    let seekResult = this.seekChild(key);
+    if (!seekResult) {
       return false;
     }
+    let currentTurn = seekResult.getTurn() + 1;
     let stone: Stone = StoneMaker.makeNew(stoneNumber);
     let data = new SequencerData(currentTurn, x, y, stone);
     let node = new SequencerNode(data);
-    let addedNode = this._head.addChild(node);
+    let addedNode = this.addChildFromCurrent(node);
 
     if (addedNode) {
+      this._currentNode = addedNode;
+      this._turn = currentTurn;
+      this._accessor[addedNode.getKey()] = addedNode;
       return true;
     } else {
       return false;

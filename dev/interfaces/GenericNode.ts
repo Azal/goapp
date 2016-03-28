@@ -7,5 +7,5 @@ export interface GenericNode<T, G> {
 
   addChild(child: G): G;
   removeChild(child: G): boolean;
-  searchChild(key: string): G;
+  searchChild(key: T): G;
 }

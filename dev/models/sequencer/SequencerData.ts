@@ -9,7 +9,7 @@ export class SequencerData implements Printable, Keyable {
   private _y: number;
   private _turn: number;
 
-  constructor(turn: number, x: number, y: number, stone: Stone) {
+  constructor(turn?: number, x?: number, y?: number, stone?: Stone) {
     this._stone = stone;
     this._x = x;
     this._y = y;
@@ -49,15 +49,19 @@ export class SequencerData implements Printable, Keyable {
   }
 
   /* Keyable methods */
-  getKey(): string {
+  public getKey(): string {
+    return this.toString();
+  }
+
+  public getNodeKey(): string {
     return this._turn + "|x:" + this._x + "|y:" + this._y;
   }
-  /*
+
   setKey(key: string): void {
     // Check key format "turn:2|x:1|y:2|stone:1"
-    if (key.match("/turn:\n+|x:\n+|y:\n+|stone:{1,2}/").length === 0) {
-      throw new Error("Sequencer Data key invalid: " + key);
-    }
+    // @TODO: if (!key.match(/turn\:\n+\|x\:\n+\|y\:\n+\|(stone|blackstone|whitestone)\:{1,2}/)) {
+    //  throw new Error("Sequencer Data key invalid: " + key);
+    // }
     let elements: string[] = key.split("|");
     let turn: string[] = elements[0].split(":");
     let x: string[] = elements[1].split(":");
@@ -68,17 +72,5 @@ export class SequencerData implements Printable, Keyable {
     this._x = parseInt(x[1]);
     this._y = parseInt(y[1]);
     this._stone = StoneMaker.makeNew(parseInt(stone[1]));
-  }
-  */
-  setKey(key: string): void {
-    // Check key format "x:1|y:2"
-    if (key.match("/x:\n+|y:\n+/").length === 0) {
-      throw new Error("Sequencer Data key invalid: " + key);
-    }
-    let elements: string[] = key.split("|");
-    let x: string[] = elements[0].split(":");
-    let y: string[] = elements[1].split(":");
-    this._x = parseInt(x[1]);
-    this._y = parseInt(y[1]);
   }
 }
