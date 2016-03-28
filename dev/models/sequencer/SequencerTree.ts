@@ -8,10 +8,12 @@ import {Stone} from "../Stone";
 export class SequencerTree implements GenericTree<SequencerNode>, Printable {
   _head: SequencerNode;
   _currentNode: SequencerNode;
+  private _turn: number;
 
   constructor() {
     this._head = new SequencerNode();
     this._currentNode = this._head;
+    this._turn = 0;
   }
 
   /* BEGIN Interface methods */
@@ -24,6 +26,7 @@ export class SequencerTree implements GenericTree<SequencerNode>, Printable {
     if (searchResult) {
       let node: SequencerNode = searchResult;
       this._currentNode = node;
+      this._turn = node.getTurn();
       return node;
     }
     return null;
@@ -69,17 +72,25 @@ export class SequencerTree implements GenericTree<SequencerNode>, Printable {
    * @return {boolean}             [Returns true when it's posible to add sequence (can be duplicated)]
    */
   public addGameSequence(x: number, y: number, stoneNumber: number): boolean {
-    let currentTurn: number = this._currentNode.getTurn();
+    let currentTurn: number = this._turn + 1;
     let stone: Stone = Stone.makeNew(stoneNumber);
     let data = new SequencerData(currentTurn, x, y, stone);
     let node = new SequencerNode(data);
-    let addedNode = this.addChild(node);
+    let addedNode = this.addChildFromCurrent(node);
+
     if (addedNode) {
       this._currentNode = addedNode;
+      this._turn = currentTurn;
+
       return true;
     } else {
       return false;
     }
   }
+
+  public getCurrentTurn(): number {
+    return this._turn;
+  }
+
   /* END Game Methods */
 }

@@ -31,8 +31,30 @@ export class SequencerNode implements GenericNode<SequencerData, SequencerNode>,
     this._data = data;
   }
 
+  public get nodes() {
+    return this._nodes;
+  }
+
+  public get key() {
+    return this._key;
+  }
+
+  public copyNode(node: SequencerNode): void {
+    this._data = node.data;
+    this._parent = node.parent;
+    this._nodes = node.nodes;
+    this._key = node.key;
+    return;
+  }
+
   public addChild(child: SequencerNode): SequencerNode {
+    if (!this._data) {
+      this.copyNode(child);
+      return this;
+    }
+
     let node = this._nodes[child.getKey()];
+
     if (node) {
       return node;
     } else {
@@ -45,6 +67,7 @@ export class SequencerNode implements GenericNode<SequencerData, SequencerNode>,
         return child;
       }
     }
+
     return null;
   }
 
