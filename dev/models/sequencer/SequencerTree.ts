@@ -4,6 +4,7 @@ import {Printable} from "../../interfaces/Printable";
 import {SequencerNode} from "./SequencerNode";
 import {SequencerData} from "./SequencerData";
 import {Stone} from "../Stone";
+import {StoneMaker} from "../StoneMaker";
 
 export class SequencerTree implements GenericTree<SequencerNode>, Printable {
   _head: SequencerNode;
@@ -54,7 +55,11 @@ export class SequencerTree implements GenericTree<SequencerNode>, Printable {
 
   // @TODO
   toString(): string {
-    return "";
+    if (this._head) {
+      return "head:\n" + this._head.toString();
+    } else {
+      return "";
+    }
   }
 
   // @TODO
@@ -73,7 +78,7 @@ export class SequencerTree implements GenericTree<SequencerNode>, Printable {
    */
   public addGameSequence(x: number, y: number, stoneNumber: number): boolean {
     let currentTurn: number = this._turn + 1;
-    let stone: Stone = Stone.makeNew(stoneNumber);
+    let stone: Stone = StoneMaker.makeNew(stoneNumber);
     let data = new SequencerData(currentTurn, x, y, stone);
     let node = new SequencerNode(data);
     let addedNode = this.addChildFromCurrent(node);

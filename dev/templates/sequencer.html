@@ -4,12 +4,20 @@
 
     <h3>Tools</h3>
 
-
+    X: <input [(ngModel)]="currentX">
+    Y: <input [(ngModel)]="currentY">
+    Stone:
+    <select [(ngModel)]="currentStone">
+      <option value="1">Black</option>
+      <option value="2">White</option>
+    </select>
+    <div class="clearfix"></div>
 
     <button class="btn-blue" *ngIf="allElementsDefined()" (click)="addGameSequence();">Add Game Sequence</button>
     <div class="clearfix"></div>
 
 
+    Sequence Key: <input [(ngModel)]="currentKey">
     <button class="btn-blue" *ngIf="sequenceKeyDefined()" (click)="searchKey();">Search for node</button>
     <div class="clearfix"></div>
 
@@ -22,36 +30,6 @@
 
     <div id="tree_representation">
       {{ tree.toString() }}
-    </div>
-  </div>
-
-  <div class="second_column">
-    <div class="board_container">
-      <div class="board {{ 'size_' + board.getSize() }}">
-        <div *ngFor="#line_number of boardIterator; #line_index = index" id="{{ line_index }}" class="line">
-          <span *ngFor="#cell_number of boardIterator;
-                        #cell_index = index"
-                (click)="onCellClick(cell_index, line_index)"
-                (mouseover)="onCellHover(cell_index, line_index)"
-                [class.empty]="board.isEmpty(cell_index, line_index)"
-                [class.black_hover]="board.isEmpty(cell_index, line_index) &&
-                                   ((board.isGameStyleSetted() && board.isBlackTurn())
-                                 || (board.isFreeStyleSetted() && board.isBlackStoneToolSetted()))"
-                [class.white_hover]="board.isEmpty(cell_index, line_index) &&
-                                   ((board.isGameStyleSetted() && board.isWhiteTurn())
-                                 || (board.isFreeStyleSetted() && board.isWhiteStoneToolSetted()))"
-                id="{{ line_index + '_' + cell_index }}"
-                class="cell">
-            <span [class.black]="board.getPosition(cell_index, line_index) !== 0
-                              && board.getPosition(cell_index, line_index) === 1"
-                  [class.white]="board.getPosition(cell_index, line_index) !== 0
-                              && board.getPosition(cell_index, line_index) === 2"
-                  class="stone">
-            </span>
-          </span>
-
-        </div>
-      </div>
     </div>
   </div>
 </div>

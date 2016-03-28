@@ -1,6 +1,7 @@
 import {Printable} from "../../interfaces/Printable";
 import {Keyable} from "../../interfaces/Keyable";
 import {Stone} from "../Stone";
+import {StoneMaker} from "../StoneMaker";
 
 export class SequencerData implements Printable, Keyable {
   private _stone: Stone;
@@ -41,7 +42,7 @@ export class SequencerData implements Printable, Keyable {
 
   /* Printable methods */
   public toString(): string {
-    return "turn:" + this._turn + "|x:" + this._x + "|y:" + this._y + "|stone:" + this._stone.toString();
+    return "turn:" + this._turn + "|x:" + this._x + "|y:" + this._y + "|" + this._stone.toString();
   }
   public print(): void {
     return console.log(this.toString());
@@ -65,6 +66,6 @@ export class SequencerData implements Printable, Keyable {
     this._turn = parseInt(turn[1]);
     this._x = parseInt(x[1]);
     this._y = parseInt(y[1]);
-    this._stone = Stone.makeNew(parseInt(stone[1]));
+    this._stone = StoneMaker.makeNew(parseInt(stone[1]));
   }
 }

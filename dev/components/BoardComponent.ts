@@ -1,10 +1,10 @@
-import {Component} from 'angular2/core';
-import {OnInit} from 'angular2/core';
-import {Board} from './board'
+import {Component} from "angular2/core";
+import {OnInit} from "angular2/core";
+import {Board} from "../models/Board";
 
 @Component({
-  selector: 'go-board',
-  templateUrl: '../board.html'
+  selector: "go-board",
+  templateUrl: "dev/templates/board.html"
 })
 
 export class BoardComponent {
@@ -15,7 +15,7 @@ export class BoardComponent {
   boardHoverPosition: [number, number] = [0, 0];
 
   onCellClick(x, y) {
-    console.log(x + '_' + y);
+    console.log(x + "_" + y);
 
     this.board.playAt(x, y);
   }

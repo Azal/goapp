@@ -24,7 +24,7 @@ export class Board {
     this._moves = 0;
     this._board = [];
 
-    var i: number, j: number;
+    let i: number, j: number;
 
     for (i = 0; i < size; ++i) {
       this._board[i] = [];
@@ -93,7 +93,7 @@ export class Board {
   /** Play a stone in the Board */
   public playAt(x: number, y: number): void {
     if (this._style === "free") {
-      var actual_value: string = this.getTool();
+      let actual_value: string = this.getTool();
       if (actual_value === "black_stone") {
         this._board[x][y] = 1;
         this._moves += 1;
@@ -134,7 +134,7 @@ export class Board {
 
   /** Reset Board */
   public reset(): void {
-    var i: number, j: number;
+    let i: number, j: number;
 
     for (i = 0; i < this._size; ++i) {
       for (j = 0; j < this._size; ++j) {
@@ -150,8 +150,8 @@ export class Board {
 
   /** Play a sequence */
   public playSequence(moves: Array<[number, number]>): void {
-    var i: number;
-    var current_style: string = this._style;
+    let i: number;
+    let current_style: string = this._style;
 
     this.reset();
     this._style = "game";
@@ -198,7 +198,7 @@ export class Board {
 
   /** Flip the color of all the stones of the Board */
   public changeColors(): void {
-    var i: number, j: number;
+    let i: number, j: number;
 
     for (i = 0; i < this._size; ++i) {
       for (j = 0; j < this._size; ++j) {
@@ -213,8 +213,8 @@ export class Board {
 
   /** String representation of the Board */
   public toString(): string {
-    var i: number, j: number;
-    var str_board: string = "";
+    let i: number, j: number;
+    let str_board: string = "";
 
     for (i = 0; i < this._size; ++i) {
       for (j = 0; j < this._size; ++j) {
@@ -222,7 +222,7 @@ export class Board {
       }
 
       str_board += "<br />";
-    } 
+    }
 
     return str_board;
   }

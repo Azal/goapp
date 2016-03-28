@@ -3,11 +3,11 @@ import {SequencerTree} from "../models/sequencer/SequencerTree";
 
 @Component({
   selector: "go-sequence-tree",
-  templateUrl: "../templates/sequencer.html"
+  templateUrl: "dev/templates/sequencer.html"
 })
 
 export class SequenceTreeComponent {
-  tree: SequencerTree = new SequencerTree();
+  tree = new SequencerTree();
   currentX: string = "";
   currentY: string = "";
   currentStone: string = "";
@@ -26,5 +26,6 @@ export class SequenceTreeComponent {
   }
 
   public searchKey() {
+    console.log(this.tree.searchChild(this.currentKey).toString());
   }
 }

@@ -1,5 +1,3 @@
-import {Whitestone} from "./Whitestone";
-import {Blackstone} from "./Blackstone";
 import {Printable} from "../interfaces/Printable";
 
 /* Board Logic and internal representation
@@ -26,19 +24,6 @@ export class Stone implements Printable {
   public print(): void {
     if (console) {
       console.log(this.toString());
-    }
-  }
-
-  static makeNew(n: number): Stone {
-    switch (n) {
-      case 0:
-        return new Stone();
-      case 1:
-        return new Blackstone();
-      case 2:
-        return new Whitestone();
-      default:
-        return new Stone();
     }
   }
 }

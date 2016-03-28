@@ -11,8 +11,11 @@ export class SequencerNode implements GenericNode<SequencerData, SequencerNode>,
   protected _key: SequencerKey;
 
   constructor(data?: SequencerData) {
-    this._data = data;
-    this._key = new SequencerKey(data.getKey());
+    if (data) {
+      this._data = data;
+      this._key = new SequencerKey(data.getKey());
+    }
+    this._nodes = [];
   }
 
   public set parent(parent: SequencerNode) {
@@ -114,8 +117,14 @@ export class SequencerNode implements GenericNode<SequencerData, SequencerNode>,
   // @TODO
   public toString(): string {
     if (this._data) {
-      return this._data.toString();
+      let strNode = this._data.toString() + "\n\t";
+      for (let node of this._nodes) {
+        console.log(node.getKey());
+        strNode = strNode + node.toString();
+      };
+      return strNode;
     } else {
+      console.log("e");
       return "";
     }
   }
