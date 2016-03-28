@@ -5,6 +5,7 @@ import {SequenceTreeComponent} from "./SequenceTreeComponent";
 @Component({
   selector: "go-editor",
   template: `
+    <go-board></go-board>
     <go-sequence-tree></go-sequence-tree>
   `,
   directives: [BoardComponent, SequenceTreeComponent]
