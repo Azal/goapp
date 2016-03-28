@@ -70,3 +70,10 @@
     }
   }
 }
+
+span.board_cell {
+  width: 43px;
+  display: inline-block;
+  text-align: center;
+  border: 1px solid black;
+}

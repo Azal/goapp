@@ -1,5 +1,4 @@
 import {Component} from "angular2/core";
-import {OnInit} from "angular2/core";
 import {Board} from "../models/Board";
 
 @Component({
@@ -12,16 +11,14 @@ export class BoardComponent {
   board_size: number = 19;
   board: Board = new Board("Go Board", this.board_size, this.board_style);
   boardIterator: number[] = this.board.getIterator();
-  boardHoverPosition: [number, number] = [0, 0];
+  boardHoverPosition: [number, number] = [-1, -1];
 
   onCellClick(x, y) {
-    console.log(x + "_" + y);
-
     this.board.playAt(x, y);
   }
 
   onCellHover(x, y) {
-    this.boardHoverPosition = [x + 1, y + 1];
+    this.boardHoverPosition = [x, y];
   }
 
   setStyle(style) {

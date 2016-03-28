@@ -22,12 +22,12 @@
 
     <h3>Game Info</h3>
 
+    <p>Hover Position: <span class="info">{{ "(" + boardHoverPosition[0] + ', ' +  boardHoverPosition[1] + ")"}}</span></p>
     <p>Name: <span class="info">{{ board.getName() }}</span></p>
     <p>ID: <span class="info">{{ board.getID() }}</span></p>
     <p>Size: <span class="info">{{ board.getSize() }}</span></p>
     <p>Style: <span class="info">{{ board.getStyle() }}</span></p>
     <p>#moves: <span class="info">{{ board.getMoves() }}</span></p>
-    <p>Hover Position: <span class="info">{{ "(" + boardHoverPosition[0] + ', ' +  boardHoverPosition[1] + ")"}}</span></p>
 
     <h3>Board represetation</h3>
 
@@ -53,14 +53,13 @@
                                  || (board.isFreeStyleSetted() && board.isWhiteStoneToolSetted()))"
                 id="{{ line_index + '_' + cell_index }}"
                 class="cell">
-            <span [class.black]="board.getPosition(cell_index, line_index) !== 0
-                              && board.getPosition(cell_index, line_index) === 1"
-                  [class.white]="board.getPosition(cell_index, line_index) !== 0
-                              && board.getPosition(cell_index, line_index) === 2"
+            <span [class.black]="board.getCell(cell_index, line_index).hasStone()
+                              && board.getCell(cell_index, line_index).hasBlackStone()"
+                  [class.white]="board.getCell(cell_index, line_index).hasStone()
+                              && board.getCell(cell_index, line_index).hasWhiteStone()"
                   class="stone">
             </span>
           </span>
-
         </div>
       </div>
     </div>
