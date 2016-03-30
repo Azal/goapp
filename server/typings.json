@@ -1,0 +1,11 @@
+{
+  "ambientDependencies": {
+    "bluebird": "github:DefinitelyTyped/DefinitelyTyped/bluebird/bluebird.d.ts#dd328830dddffbe19e9addd7cf8532cbd3600816",
+    "connect": "github:DefinitelyTyped/DefinitelyTyped/connect/connect.d.ts#9d4364560ec6422b18c9b86735413ad04bf5b93c",
+    "es6-shim": "github:DefinitelyTyped/DefinitelyTyped/es6-shim/es6-shim.d.ts#6697d6f7dadbf5773cb40ecda35a76027e0783b2",
+    "express": "github:DefinitelyTyped/DefinitelyTyped/express/express.d.ts#dd638012d63e069f2c99d06ef4dcc9616a943ee4",
+    "node": "github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts#20e1eb9616922d382d918cc5a21870a9dbe255f5",
+    "socket.io": "github:DefinitelyTyped/DefinitelyTyped/socket.io/socket.io.d.ts#4128f7af06c355e3526b7cf7cbb85e2e43bff167",
+    "systemjs": "github:DefinitelyTyped/DefinitelyTyped/systemjs/systemjs.d.ts#83af898254689400de8fb6495c34119ae57ec3fe"
+  }
+}

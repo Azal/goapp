@@ -1,0 +1,21 @@
+{
+  "name": "goapp",
+  "description": "a Sails application",
+  "main": "app.js",
+  "authors": [
+    "kiel"
+  ],
+  "license": "MIT",
+  "moduleType": [],
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+  }
+}
