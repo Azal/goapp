@@ -21,7 +21,12 @@ module.exports = {
   //   connection: 'someMongodbServer'
   // }
   models: {
-    migrate: 'alter'
+    migrate: 'alter',
+    autoPK: true,
+    autoCreatedAt: true,
+    autoUpdatedAt: true,
+    schema: true,
+    connection: 'developmentPostgresDB'
   }
 
 };

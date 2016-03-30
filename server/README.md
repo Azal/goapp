@@ -6,6 +6,8 @@ a [Sails](http://sailsjs.org) application
 
 `npm install -g grunt`
 
+`npm install -g grunt-cli`
+
 `npm install`
 
 ## Run
@@ -14,4 +16,4 @@ a [Sails](http://sailsjs.org) application
 
 ## Debugging
 
-`nodemon`
+`node-inspector & node --debug app`

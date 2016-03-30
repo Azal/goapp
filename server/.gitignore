@@ -122,3 +122,5 @@ api/controllers/*.js
 api/controllers/*.js.map
 api/model/*.js
 api/model/*.js.map
+
+.env

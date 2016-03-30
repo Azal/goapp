@@ -36,7 +36,7 @@ module.exports.routes = {
     controller: 'Users',
     action: 'login'
   },
-  'GET /login': 'UsersController.login',
+  'POST /login': 'UsersController.login',
   'DESTROY /logout': 'UsersController.logout'//,
 
   //'GET /channels': 'ChannelsController.index'
