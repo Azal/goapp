@@ -1,6 +1,6 @@
 import {Component} from "angular2/core";
-import {BoardComponent} from "./BoardComponent";
-import {SequenceTreeComponent} from "./SequenceTreeComponent";
+import {BoardComponent} from "./board.component";
+import {SequenceTreeComponent} from "./sequencetree.component";
 
 @Component({
   selector: "go-editor",
