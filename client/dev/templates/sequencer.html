@@ -1,35 +1,48 @@
 <div class="main_container">
-  <div class="first_column">
+  <div class="full_column">
     <h1>Angular 2: Sequence Tree</h1>
 
     <h3>Tools</h3>
+
     X: <input [(ngModel)]="currentX">
+
     Y: <input [(ngModel)]="currentY">
-    Stone:
-    <select [(ngModel)]="currentStone">
-      <option value="1">Black</option>
-      <option value="2">White</option>
+
+    Move Type:
+    <select [(ngModel)]="moveType">
+      <option value="pass">Pass</option>
+      <option value="stone">Stone</option>
+      <option value="mark">Mark</option>
     </select>
+
+    Mark Type:
+    <select [(ngModel)]="markType">
+      <option value="white">White</option>
+      <option value="black">Black</option>
+      <option value="x_mark">X mark</option>
+      <option value="a_letter">A</option>
+      <option value="b_letter">B</option>
+    </select>
+
     <div class="clearfix"></div>
 
-    <button class="btn-blue" *ngIf="allElementsDefined()" (click)="addGameSequence();">Add Game Sequence</button>
+    <button class="btn-blue" *ngIf="allElementsDefined()" (click)="addSequence();">Add sequence</button>
+    <button class="btn-blue" *ngIf="allElementsDefined()" (click)="addSequenceGroupElement();">Add sequence group elem</button>
     <div class="clearfix"></div>
 
     Sequence Key: <input [(ngModel)]="currentKey">
-    <button class="btn-blue" *ngIf="sequenceKeyDefined()" (click)="searchKey();">Set current node</button>
-    <button class="btn-blue" *ngIf="sequenceKeyDefined()" (click)="addGameSequenceToCurrent();">Add Game Sequence To Current</button>
+    <button class="btn-yellow" *ngIf="sequenceKeyDefined()" (click)="seekAndAddSequence();">Add sequence to key</button>
+    <button class="btn-yellow" *ngIf="sequenceKeyDefined()" (click)="seekAndAddSequenceGroupElement();">Add sequence group elemn to key</button>
 
     <span (ngModel)="searchResult"></span>
     <div class="clearfix"></div>
 
     <h3>Game Info</h3>
 
-    <p>Current turn: <span class="info">{{ tree.getCurrentTurn() }}</span></p>
-    <p>Current position: <span class="info">{{ tree.getCurrentTurn() }}</span></p>
+    <p>Nodes count: <span class="info">{{ tree.getNodeCount() }}</span></p>
+    <h3>Current node</h3><div id="current_node" [innerHTML]="currentNodeString()"></div>
 
-    <h3>Tree represetation</h3>
-
-    <div id="tree_representation" [innerHTML]="tree.toString()"></div>
+    <h3>Tree represetation</h3><div id="tree_representation" [innerHTML]="tree.toString()"></div>
   </div>
 </div>
 <div class="clearfix"></div>

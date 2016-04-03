@@ -37,6 +37,11 @@ body {
     vertical-align: top;
     margin: 0 10px;
   }
+
+  .full_column {
+    width: 100%;
+    padding: 15px;
+  }
 }
 
 h1 {
@@ -96,6 +101,18 @@ button.btn-green:hover {
   color: #fff;
   background-color: #449d44;
   border-color: #398439;
+}
+
+button.btn-yellow {
+  color: #fff;
+  background-color: #f0ad4e;
+  border-color: #eea236;
+}
+
+button.btn-yellow:hover {
+  color: #fff;
+  background-color: #ec971f;
+  border-color: #d58512;
 }
 
 input {

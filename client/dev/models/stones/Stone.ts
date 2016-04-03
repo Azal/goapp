@@ -1,4 +1,4 @@
-import {Printable} from "../interfaces/Printable";
+import {Printable} from "../../interfaces/Printable";
 
 /* Board Logic and internal representation
 /* The board saves:

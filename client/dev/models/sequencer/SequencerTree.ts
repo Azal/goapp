@@ -2,8 +2,9 @@ import {GenericTree} from "../../interfaces/GenericTree";
 import {GenericNode} from "../../interfaces/GenericNode";
 import {Printable} from "../../interfaces/Printable";
 import {SequencerNode} from "./SequencerNode";
-import {SequencerData} from "./SequencerData";
-import {Stone} from "../Stone";
+import {SequencerGroupNode} from "./SequencerGroupNode";
+import {SequencerGroupElement} from "./SequencerGroupElement";
+import {SequencerTreeData} from "./SequencerTreeData";
 import {StoneMaker} from "../StoneMaker";
 
 export class SequencerTree implements GenericTree<SequencerNode>, Printable {
@@ -11,12 +12,18 @@ export class SequencerTree implements GenericTree<SequencerNode>, Printable {
   _currentNode: SequencerNode;
   _accessor: Object;
   private _turn: number;
+  private _count: number;
 
   constructor() {
     this._head = new SequencerNode();
     this._currentNode = this._head;
     this._turn = 0;
     this._accessor = {};
+    this._count = 0;
+  }
+
+  public getNodeCount(): number {
+    return this._count;
   }
 
   public get currentNode(): SequencerNode {
@@ -29,22 +36,37 @@ export class SequencerTree implements GenericTree<SequencerNode>, Printable {
    * @param {string} key [Represents unique game state]
    */
   public seekChild(key: string): SequencerNode {
-    let searchResult: SequencerNode = this.searchChild(key);
-    if (searchResult) {
-      let node: SequencerNode = searchResult;
+    let node: SequencerNode = this.searchChild(key);
+    if (node) {
       this._currentNode = node;
-      this._turn = node.getTurn();
+      this._turn = node.deep + 1;
       return node;
     }
     return null;
   }
 
+  private increaseNodeCount(): void {
+    this._count += 1;
+  }
+
   public addChild(child: SequencerNode): SequencerNode {
-    return this._head.addChild(child);
+    let node: SequencerNode = this._head.addChild(child);
+    if (node) {
+      this.increaseNodeCount();
+      return node;
+    } else {
+      return null;
+    }
   }
 
   public addChildFromCurrent(child: SequencerNode): SequencerNode {
-    return this._currentNode.addChild(child);
+    let node: SequencerNode = this._currentNode.addChild(child);
+    if (node) {
+      this.increaseNodeCount();
+      return node;
+    } else {
+      return null;
+    }
   }
 
   public removeChild(key: string): boolean {
@@ -56,11 +78,8 @@ export class SequencerTree implements GenericTree<SequencerNode>, Printable {
   }
 
   public searchChild(key: string): SequencerNode {
-    let data = new SequencerData();
-    data.setKey(key);
-
     if (!this._accessor[key]) {
-      return this._head.searchChild(data);
+      return this._head.searchChild(key);
     } else {
       return this._accessor[key];
     }
@@ -81,23 +100,14 @@ export class SequencerTree implements GenericTree<SequencerNode>, Printable {
   /* END Interface methods */
 
   /* Begin Game Methods */
-  /**
-   * Add a game sequence, using currentNode reference (Must be seeked before for complex usage)
-   * @param  {number}  x           [Represents x axis board position]
-   * @param  {number}  y           [Represents y axis board position]
-   * @param  {number}  stoneNumber [Stone representation played at given position]
-   * @return {boolean}             [Returns true when it's posible to add sequence (can be duplicated)]
-   */
-  public addGameSequence(x: number, y: number, stoneNumber: number): boolean {
-    let currentTurn: number = this._turn + 1;
-    let stone: Stone = StoneMaker.makeNew(stoneNumber);
-    let data = new SequencerData(currentTurn, x, y, stone);
-    let node = new SequencerNode(data);
+  public addSequence(moveType: string, x: number, y: number, markType: string): boolean {
+    let treeData: SequencerTreeData = new SequencerTreeData(moveType, markType, x, y);
+    let node = new SequencerNode(treeData);
     let addedNode = this.addChildFromCurrent(node);
 
     if (addedNode) {
       this._currentNode = addedNode;
-      this._turn = currentTurn;
+      this._turn = addedNode.deep + 1;
       this._accessor[addedNode.getKey()] = addedNode;
       return true;
     } else {
@@ -105,29 +115,39 @@ export class SequencerTree implements GenericTree<SequencerNode>, Printable {
     }
   }
 
-  public addFreeGameSequence(key: string, x: number, y: number, stoneNumber: number): boolean {
+  public addSequenceGroupElement(moveType: string, x: number, y: number, markType: string): boolean {
+    let treeData: SequencerTreeData = new SequencerTreeData(moveType, markType, x, y);
+    if (this._currentNode.isGroup()) {
+      this._currentNode.addElement(new SequencerGroupElement(treeData));
+      return true;
+    } else {
+      let node = new SequencerGroupNode(null);
+      let addedNode = this.addChildFromCurrent(node);
+
+      if (addedNode) {
+        this._currentNode = addedNode;
+        this._accessor[addedNode.getKey()] = addedNode;
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
+
+  public seekAndAddSequence(key: string, moveType: string, x: number, y: number, markType: string): boolean {
     let seekResult = this.seekChild(key);
     if (!seekResult) {
       return false;
     }
-    let currentTurn = seekResult.getTurn() + 1;
-    let stone: Stone = StoneMaker.makeNew(stoneNumber);
-    let data = new SequencerData(currentTurn, x, y, stone);
-    let node = new SequencerNode(data);
-    let addedNode = this.addChildFromCurrent(node);
-
-    if (addedNode) {
-      this._currentNode = addedNode;
-      this._turn = currentTurn;
-      this._accessor[addedNode.getKey()] = addedNode;
-      return true;
-    } else {
-      return false;
-    }
+    return this.addSequence(moveType, x, y, markType);
   }
 
-  public getCurrentTurn(): number {
-    return this._turn;
+  public seekAndAddSequenceGroupElement(key: string, moveType: string, x: number, y: number, markType: string): boolean {
+    let seekResult = this.seekChild(key);
+    if (!seekResult) {
+      return false;
+    }
+    return this.addSequenceGroupElement(moveType, x, y, markType);
   }
 
   /* END Game Methods */
