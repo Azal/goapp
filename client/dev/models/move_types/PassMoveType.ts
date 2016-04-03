@@ -1,13 +1,16 @@
 import {MoveType} from "./MoveType"
 
 export class PassMoveType extends MoveType {
-  allowStones() {
+  public isAStone() {
     return false;
   }
-  allowMarkers() {
+  public isAMarker() {
     return false;
   }
-  allowPass() {
+  public isAPass() {
     return true;
+  }
+  public toString(): string {
+    return "empty";
   }
 }

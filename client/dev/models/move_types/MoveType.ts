@@ -1,11 +1,19 @@
-export class MoveType {
-  allowStones(): boolean {
+import {Printable} from "../../interfaces/Printable";
+
+export class MoveType implements Printable{
+  public isAStone(): boolean {
     return false;
   }
-  allowMarkers(): boolean {
+  public isAMarker(): boolean {
     return false;
   }
-  allowPass(): boolean {
+  public isAPass(): boolean {
     return false;
+  }
+  public print(): void {
+    console.log(this.toString());
+  }
+  public toString(): string {
+    return "";
   }
 }

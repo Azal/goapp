@@ -3,7 +3,7 @@ import {PassMoveType} from "./move_types/PassMoveType";
 import {StoneMoveType} from "./move_types/StoneMoveType";
 import {MarkMoveType} from "./move_types/MarkMoveType";
 
-export class MoveTypeMaker {
+export class MoveTypeFactory {
   static makeNew(key: string): MoveType {
     switch (key) {
       case "pass":

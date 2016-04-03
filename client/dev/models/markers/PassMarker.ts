@@ -1,11 +1,11 @@
 import {Marker} from "./Marker"
 
-export class LetterMarker extends Marker{
+export class PassMarker extends Marker {
   constructor(key: string) {
     super(key);
   }
 
-  public isNotEmpty(): boolean {
+  public isAPass(): boolean {
     return true;
   }
 }

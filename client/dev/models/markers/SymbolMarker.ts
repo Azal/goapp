@@ -1,6 +1,6 @@
 import {Marker} from "./Marker"
 
-export class LetterMarker extends Marker{
+export class SymbolMarker extends Marker {
   constructor(key: string) {
     super(key);
   }

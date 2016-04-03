@@ -1,6 +1,6 @@
-import {Stone} from "./stones/Stone";
-import {Blackstone} from "./stones/Blackstone";
-import {Whitestone} from "./stones/Whitestone";
+import {Stone} from "./markers/Stone";
+import {Blackstone} from "./markers/Blackstone";
+import {Whitestone} from "./markers/Whitestone";
 
 export class StoneMaker {
   static makeNew(n: number): Stone {

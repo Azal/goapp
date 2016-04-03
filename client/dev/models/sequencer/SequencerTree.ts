@@ -72,7 +72,10 @@ export class SequencerTree implements GenericTree<SequencerNode>, Printable {
   public removeChild(key: string): boolean {
     let node = this.searchChild(key);
     if (node) {
-      return node.parent.removeChild(node);
+      if (node.parent) {
+        return node.parent.removeChild(node);
+      }
+      delete(this._accessor[node.getKey()]);
     }
     return false;
   }
@@ -102,6 +105,11 @@ export class SequencerTree implements GenericTree<SequencerNode>, Printable {
   /* Begin Game Methods */
   public addSequence(moveType: string, x: number, y: number, markType: string): boolean {
     let treeData: SequencerTreeData = new SequencerTreeData(moveType, markType, x, y);
+    if (!treeData.valid()) {
+      console.log("Invalid Sequence Data");
+      return false;
+    }
+
     let node = new SequencerNode(treeData);
     let addedNode = this.addChildFromCurrent(node);
 
@@ -117,12 +125,19 @@ export class SequencerTree implements GenericTree<SequencerNode>, Printable {
 
   public addSequenceGroupElement(moveType: string, x: number, y: number, markType: string): boolean {
     let treeData: SequencerTreeData = new SequencerTreeData(moveType, markType, x, y);
+    if (!treeData.valid()) {
+      console.log("Invalid Sequence Data");
+      return false;
+    }
+
     if (this._currentNode.isGroup()) {
       this._currentNode.addElement(new SequencerGroupElement(treeData));
       return true;
     } else {
-      let node = new SequencerGroupNode(null);
-      let addedNode = this.addChildFromCurrent(node);
+      let node: SequencerGroupNode = new SequencerGroupNode(treeData);
+      node.addElement(new SequencerGroupElement(treeData));
+
+      let addedNode: SequencerNode = this.addChildFromCurrent(node);
 
       if (addedNode) {
         this._currentNode = addedNode;

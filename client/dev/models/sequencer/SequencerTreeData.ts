@@ -1,10 +1,11 @@
-import {MoveTypeMaker} from "../MoveTypeMaker";
-import {MarkerMaker} from "../MarkerMaker";
+import {MoveTypeFactory} from "../MoveTypeFactory";
+import {MarkerFactory} from "../MarkerFactory";
 import {Marker} from "../markers/Marker";
 import {MoveType} from "../move_types/MoveType";
 import {Keyable} from "../../interfaces/Keyable";
+import {Printable} from "../../interfaces/Printable";
 
-export class SequencerTreeData implements Keyable{
+export class SequencerTreeData implements Keyable, Printable{
   private _moveType: string;
   private _markType: string;
   private _x: number;
@@ -17,8 +18,8 @@ export class SequencerTreeData implements Keyable{
     this._markType = markType;
     this._x = x;
     this._y = y;
-    this._move = MoveTypeMaker.makeNew(moveType);
-    this._mark = MarkerMaker.makeNew(markType);
+    this._move = MoveTypeFactory.makeNew(moveType);
+    this._mark = MarkerFactory.makeNew(markType);
   }
 
   public get moveType() : string {
@@ -26,7 +27,7 @@ export class SequencerTreeData implements Keyable{
   }
   public set moveType(v : string) {
     this._moveType = v;
-    this._move = MoveTypeMaker.makeNew(v);
+    this._move = MoveTypeFactory.makeNew(v);
   }
 
   public get markType() : string {
@@ -34,7 +35,7 @@ export class SequencerTreeData implements Keyable{
   }
   public set markType(v : string) {
     this._markType = v;
-    this._mark = MarkerMaker.makeNew(v);
+    this._mark = MarkerFactory.makeNew(v);
   }
 
   public get x() : number {
@@ -52,7 +53,7 @@ export class SequencerTreeData implements Keyable{
   }
 
   public getKey(): string {
-    return "|x:" + this._x + "|y:" + this._y;
+    return "x:" + this._x + "|y:" + this._y;
   }
 
   public getNodeKey(): string {
@@ -61,5 +62,17 @@ export class SequencerTreeData implements Keyable{
 
   setKey(key: string): void {
     return;
+  }
+
+  public print(): void {
+    console.log(this.toString());
+  }
+
+  public toString(): string {
+    return "x:" + this._x + "|y:" + this._y + "|mark:" + this._mark.toString() + "|move:" + this._move.toString();
+  }
+
+  public valid(): boolean {
+    return this._move.isAPass() && this._mark.isAPass() || this._move.isAStone() && this._mark.isAStone() || this._move.isAMarker() && this._mark.isNotEmpty();
   }
 }

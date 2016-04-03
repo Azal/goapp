@@ -144,7 +144,7 @@ export class SequencerNode implements GenericNode<SequencerTreeData, SequencerNo
 
   public toString(): string {
     if (this._data) {
-      let strNode = "[key: " + this.key + "] [data: " + this._data.toString() + "] <br/>";
+      let strNode = "[key: " + this._key + "][deep:" + this._deep + "][data: " + this._data.toString() + "] <br/>";
 
       for (let key in this._nodes) {
         let node = this._nodes[key];
