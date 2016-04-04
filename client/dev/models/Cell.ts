@@ -1,10 +1,18 @@
+/*
 /* Cell structure
+/*
 /* The Cell save its state:
-/* 0: for empty cell,
-/* 1: for black stone on cell,
-/* 2: for white stone on cell
+/*  0: for empty cell,
+/*  1: for black stone on cell,
+/*  2: for white stone on cell,
+/*  3: for validating black stone on cell,
+/*  4: for validating white stone on cell,
+/* 10: mark as captured on board,
+/* 11: black point,
+/* 12: white point,
+/* 13: dame point
 /**/
-import {Board} from './board'
+import {Board} from './Board'
 
 export class Cell {
   private _x: number;
@@ -15,6 +23,7 @@ export class Cell {
   private _group_id: number;
   private _parent_board: Board;
   private _mark_to_remove: boolean;
+  private _was_visited: boolean;
 
   constructor(x: number, y: number, board: Board) {
     this._x = x;
@@ -24,6 +33,7 @@ export class Cell {
     this._liberties = -1;
     this._group_id = 0;
     this._mark_to_remove = false;
+    this._was_visited = false;
   }
 
   /** Getters and Setters */
@@ -41,8 +51,28 @@ export class Cell {
     if (this.isEmpty()) {
       return -1;
     } else {
-      return this._parent_board.getCellNeighbors(this).filter(_cell => _cell.isEmpty()).length;
+      return this._parent_board.getNeighborsOf(this).filter(_cell => _cell.isEmpty() && _cell.isNotValidating()).length;
     }
+  }
+
+  public isNotValidating(): boolean {
+    return this._state !== 3 && this._state !== 4;
+  }
+
+  public isValidatingForBlack(): boolean {
+    return this._state === 3;
+  }
+
+  public isValidatingForWhite(): boolean {
+    return this._state === 4;
+  }
+
+  public setValidatingStateFor(color: string): void {
+    this._state = (color === "black") ? 3 : 4;
+  }
+
+  public cleanValidationState(): void {
+    this._state = 0;
   }
 
   public getGroupId(): number {
@@ -65,13 +95,29 @@ export class Cell {
     this._mark_to_remove = true;
   }
 
+  public visitForCounting(): void {
+    this._was_visited = true;
+  }
+
+  public markAsPoint(): void {
+    this._state = 11;
+  }
+
+  // public markAsPoint(): void {
+  //   this._state = 12;
+  // }
+
+  public markAsDame(): void {
+    this._state = 13;
+  }
+
   public unmarkToRemove(): void {
     this._mark_to_remove = false;
   }
 
   /** Helpers */
   public playStone(color: string, group_id: number): void {
-    // console.log("Playing " + color + " stone at: " + this.toString("coods"));
+    // console.log("Playing " + color + " stone at: " + this.toString("coords"));
     var board: Board = this._parent_board;
 
     /* Actual play */
@@ -82,7 +128,7 @@ export class Cell {
     }
     this._group_id = group_id;
 
-    var neighborCells: Cell[] = board.getCellNeighbors(this);
+    var neighborCells: Cell[] = board.getNeighborsOf(this);
     var friendCells: Cell[] = neighborCells.filter(_cell => _cell.hasSameColorWith(this));
     var enemyCells: Cell[] = neighborCells.filter(_cell => !(_cell.isEmpty() || _cell.hasSameColorWith(this)));
 
@@ -90,27 +136,38 @@ export class Cell {
     var newLiberties: number = defaultLiberties - enemyCells.length;
     var visitedGroupsIds: number[] = [];
     var currentGroupId: number;
+    var removedStones: number;
     var response: boolean;
 
     /* Removing enemy stones first! */
     for (var enemyCell of enemyCells) {
-      response = board.floodfill(enemyCell);
+      response = board.removingStonesFrom(enemyCell, false);
 
       if (response) {
-        board.removeAllMarkedToRemoveCells();
+        removedStones = board.removeAllMarkedToRemoveCells();
+        console.log("Removing " + removedStones + " enemy stones");
+
+        /* Check if possible Ko situation arise after the capture */
+        if (removedStones === 1) {
+          console.log("Posible Ko situation!");
+          console.log("Added " + enemyCell.toString("coords"));
+
+          board.savePossibleKo(enemyCell);
+        }
       } else {
         board.cleanAllMarkedToRemove();
       }
     }
 
-    /* Removing friendly stones */
-    response = board.floodfill(this);
+    /* Removing friendly stones on suicide case: Not allowed for now! */
+    // response = board.removingStonesFrom(this, false);
 
-    if (response) {
-      board.removeAllMarkedToRemoveCells();
-    } else {
-      board.cleanAllMarkedToRemove();
-    }
+    // if (response) {
+    //   console.log("Removing friend stones");
+    //   board.removeAllMarkedToRemoveCells();
+    // } else {
+    //   board.cleanAllMarkedToRemove();
+    // }
 
     /* Update liberties of friend neighbor groups */
     // for (var neighborCell of friendCells) {
@@ -151,7 +208,7 @@ export class Cell {
 
     //     if (neighborCell.getLiberties() - 1 === 0) {
     //       restore = true;
-    //       groupsForRestore = board.getCellNeighbors(neighborCell);
+    //       groupsForRestore = board.getNeighborsOf(neighborCell);
     //     }
 
     //     board.setAllCellsWithIdToLiberties(currentGroupId, neighborCell.getLiberties() - 1);
@@ -183,6 +240,10 @@ export class Cell {
     // }
   }
 
+  public markAsCaptured(mark: string): void {
+    this._state = 10;
+  }
+
   public removeStone(): void {
     this._state = 0;
     this._liberties = -1;
@@ -210,12 +271,32 @@ export class Cell {
     return this._state === 0;
   }
 
+  public isMarkedAsCaptured(): boolean {
+    return this._state === 10;
+  }
+
+  public wasVisited(): boolean {
+    return this._was_visited;
+  }
+
   public isMarkedToRemove(): boolean {
     return this._mark_to_remove === true;
   }
 
+  public isMarkedAsPoint(): boolean {
+    return this._state === 11;
+  }
+
+  public isMarkedAsDame(): boolean {
+    return this._state === 13;
+  }
+
   public hasStone(): boolean {
     return this._state === 1 || this._state === 2;
+  }
+
+  public hasStoneState(state): boolean {
+    return this._state === state;
   }
 
   public hasBlackStone(): boolean {
@@ -227,7 +308,9 @@ export class Cell {
   }
 
   public hasSameColorWith(cell: Cell): boolean {
-    if ((this.hasBlackStone() && cell.hasBlackStone()) || (this.hasWhiteStone() && cell.hasWhiteStone())) {
+    if ((this.hasBlackStone() && cell.hasBlackStone()) || (this.hasWhiteStone() && cell.hasWhiteStone())
+      || (this.hasBlackStone() && cell.isValidatingForBlack()) || (this.isValidatingForBlack() && cell.hasBlackStone())
+      || (this.hasWhiteStone() && cell.isValidatingForWhite()) || (this.isValidatingForWhite() && cell.hasWhiteStone())) {
       return true;
     } else {
       return false;
@@ -261,6 +344,7 @@ export class Cell {
     this._liberties = -1;
     this._group_id = 0;
     this._mark_to_remove = false;
+    // this._was_visited = false;
   }
 
   /** String representation of a Cell */
@@ -276,7 +360,7 @@ export class Cell {
     }
 
     if (string_style === "short") {
-      return (this._mark_to_remove ? "R" : "-") + "," + this._group_id;
+      return "" + this._state;
     }
   }
 }

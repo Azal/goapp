@@ -54,6 +54,10 @@
     background-size: 100px 250px;
   }
 
+  .cell .captured_mark.stone {
+    border: 1px solid;
+  }
+
   .cell.empty.black_hover {
     &:hover .stone {
       background: url(../../assets/images/stones-sprite-smallest.png) -5px -5px;
@@ -69,10 +73,16 @@
       opacity: 0.6;
     }
   }
+
+  .cell.captured_mark_hover {
+    &:hover .stone {
+      border: 1px solid;
+    }
+  }
 }
 
 span.board_cell {
-  width: 43px;
+  width: 20px;
   display: inline-block;
   text-align: center;
   border: 1px solid black;
