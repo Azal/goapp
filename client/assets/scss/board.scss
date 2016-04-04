@@ -7,12 +7,15 @@
 
 .board {
   margin: 0 auto;
+  padding: 15px;
   width: 798px;
   height: 798px;
-  border: 1px black solid;
+  border: 1px solid #000;
   border-radius: 3px;
-  background-image: url(../../assets/images/bg-board.png);
-  background-repeat: repeat-y;
+  background-image: url(../../assets/images/board_grid.png);
+  background-repeat: no-repeat;
+  background-size: 92%;
+  background-position: 34px 34px;
 
   .line {
     display: block;
@@ -54,6 +57,10 @@
     background-size: 100px 250px;
   }
 
+  .cell .captured_mark.stone {
+    border: 1px solid;
+  }
+
   .cell.empty.black_hover {
     &:hover .stone {
       background: url(../../assets/images/stones-sprite-smallest.png) -5px -5px;
@@ -69,4 +76,17 @@
       opacity: 0.6;
     }
   }
+
+  .cell.captured_mark_hover {
+    &:hover .stone {
+      border: 1px solid;
+    }
+  }
+}
+
+span.board_cell {
+  width: 20px;
+  display: inline-block;
+  text-align: center;
+  border: 1px solid black;
 }

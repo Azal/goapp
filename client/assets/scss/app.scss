@@ -10,17 +10,32 @@ body {
   margin: 0 auto;
 
   .first_column {
-    width: 35%;
+    width: 50%;
     display: inline-block;
     vertical-align: top;
     margin: 0px 10px;
   }
 
   .second_column {
-    width: 55%;
+    width: 46%;
     display: inline-block;
     vertical-align: top;
-    margin: 0px 10px;
+    margin: 0 10px;
+    float: right;
+  }
+
+  .info_column {
+    width: 25%;
+    display: inline-block;
+    vertical-align: top;
+    margin: 0 10px;
+  }
+
+  .two_columns {
+    width: 65%;
+    display: inline-block;
+    vertical-align: top;
+    margin: 0 10px;
   }
 }
 
@@ -69,6 +84,26 @@ button.btn-blue:hover {
   color: #fff;
   background-color: #286090;
   border-color: #204d74;
+}
+
+button.btn-green {
+  color: #fff;
+  background-color: #5cb85c;
+  border-color: #4cae4c;
+}
+
+button.btn-green:hover {
+  color: #fff;
+  background-color: #449d44;
+  border-color: #398439;
+}
+
+input {
+  width: 20px;
+  text-align: center;
+  border: 0px;
+  font-size: 17px;
+  border-bottom: 1px solid;
 }
 
 .info {

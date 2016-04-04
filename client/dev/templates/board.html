@@ -2,37 +2,71 @@
   <div class="first_column">
     <h1>Angular 2: Go Editor</h1>
 
-    <h3>Board Tools</h3>
+    <div class="info_column">
+      <h3>Game Info</h3>
 
-    <button class="btn-blue" (click)="setStyle('free')">Free style</button>
-    <button class="btn-blue" (click)="setStyle('game')">Game style</button>
-    <button class="btn-blue" (click)="changeColors()">Change colors</button>
-    <button class="btn-blue" (click)="resetBoard()">Reset</button>
+      <p>Hover Position: <span class="info">{{ "(" + boardHoverPosition[0] + ', ' +  boardHoverPosition[1] + ")"}}</span></p>
+      <p>Name: <span class="info">{{ board.getName() }}</span></p>
+      <p>ID: <span class="info">{{ board.getId() }}</span></p>
+      <p>Size: <span class="info">{{ board.getSize() }}</span></p>
+      <p>Style: <span class="info">{{ board.getMode() }}</span></p>
+      <p>#moves: <span class="info">{{ board.getMovesCount() }}</span></p>
+      <p>#FollowedTurnPasses: <span class="info">{{ board.getFollowedTurnPasses() }}</span></p>
+      <p>Has game ended?: <span class="info">{{ board.isGameEnded() }}</span></p>
+    </div>
+
+    <div class="two_columns">
+      <h3>Board Tools</h3>
+
+      <button class="btn-blue" (click)="setMode('free')">Free style</button>
+      <button class="btn-blue" (click)="setMode('game')">Game style</button>
+      <button class="btn-blue" (click)="changeColors()">Change colors</button>
+      <button class="btn-blue" (click)="resetBoard()">Reset</button>
+      <div class="clearfix"></div>
+
+      <button class="btn-green" *ngIf="board.getMode() === 'free'"
+              (click)="setTool('black_stone')">Black Stone</button>
+      <button class="btn-green" *ngIf="board.getMode() === 'free'"
+              (click)="setTool('white_stone')">White Stone</button>
+      <button class="btn-green" *ngIf="board.getMode() === 'free'"
+              (click)="setTool('remove_stone')">Remove Stone</button>
+      <button class="btn-green" *ngIf="board.getMode() === 'game'"
+              (click)="onPassTurn()">Pass Turn</button>
+      <div class="clearfix"></div>
+
+      <button class="btn-blue" (click)="playExampleSequence()">Play Example Sequence</button>
+      <button class="btn-blue" (click)="toggleBoardRepresentation()">Show Board Matrix</button>
+      <div class="clearfix"></div>
+
+      <div *ngIf="board.isGameEnded()">
+        <button class="btn-green" (click)="onCountBoard()">Count</button>
+        <p>Final message: <span class="info">{{ countMessage }}</span></p>
+      </div>
+      <div class="clearfix"></div>
+
+      <p>#captured by black: <span class="info">{{ board.getCapturedWhiteStones() }}</span></p>
+      <p>#captured by white: <span class="info">{{ board.getCapturedBlackStones() }}</span></p>
+    </div>
     <div class="clearfix"></div>
 
-    <button class="btn-blue" *ngIf="board.getStyle() === 'free'"
-            (click)="setTool('black_stone')">Black Stone</button>
-    <button class="btn-blue" *ngIf="board.getStyle() === 'free'"
-            (click)="setTool('white_stone')">White Stone</button>
-    <button class="btn-blue" *ngIf="board.getStyle() === 'free'"
-            (click)="setTool('remove_stone')">Remove Stone</button>
-    <div class="clearfix"></div>
+    <div class="info_column">
+      <h3>Game Rules</h3>
 
-    <button class="btn-blue" (click)="playExampleSequence()">Play Example Sequence</button>
+      <p>Komi: <span class="info">{{ board.getGameRules().getKomi() }}</span></p>
+      <p>Handicap: <span class="info">{{ board.getGameRules().getHandicap() }}</span></p>
+      <p>MainTime: <span class="info">{{ board.getGameRules().getMainTime() }} minutes</span></p>
+      <p>ByoYomiTime: <span class="info">{{ board.getGameRules().getByoYomiTime() }} seconds</span></p>
+      <p>ByoYomiPeriods: <span class="info">{{ board.getGameRules().getByoYomiPeriods() }}</span></p>
+      <p>Privacy: <span class="info">{{ board.getGameRules().getPrivacy() }}</span></p>
+      <p>Style: <span class="info">{{ board.getGameRules().getStyle() }}</span></p>
+    </div>
 
-    <h3>Game Info</h3>
+    <div class="two_columns">
+      <h3 *ngIf="showBoardRepresentation">Board represetation</h3>
 
-    <p>Name: <span class="info">{{ board.getName() }}</span></p>
-    <p>ID: <span class="info">{{ board.getID() }}</span></p>
-    <p>Size: <span class="info">{{ board.getSize() }}</span></p>
-    <p>Style: <span class="info">{{ board.getStyle() }}</span></p>
-    <p>#moves: <span class="info">{{ board.getMoves() }}</span></p>
-    <p>Hover Position: <span class="info">{{ "(" + boardHoverPosition[0] + ', ' +  boardHoverPosition[1] + ")"}}</span></p>
-
-    <h3>Board represetation</h3>
-
-    <div [innerHTML]="board.toString()"
-          id="board_representation">
+      <div *ngIf="showBoardRepresentation" [innerHTML]="board.toString()"
+            id="board_representation">
+      </div>
     </div>
   </div>
 
@@ -46,21 +80,22 @@
                 (mouseover)="onCellHover(cell_index, line_index)"
                 [class.empty]="board.isEmpty(cell_index, line_index)"
                 [class.black_hover]="board.isEmpty(cell_index, line_index) &&
-                                   ((board.isGameStyleSetted() && board.isBlackTurn())
-                                 || (board.isFreeStyleSetted() && board.isBlackStoneToolSetted()))"
+                                   ((board.isGameModeSetted() && !board.isGameEnded() && board.isBlackTurn())
+                                 || (board.isFreeModeSetted() && board.isBlackStoneToolSetted()))"
                 [class.white_hover]="board.isEmpty(cell_index, line_index) &&
-                                   ((board.isGameStyleSetted() && board.isWhiteTurn())
-                                 || (board.isFreeStyleSetted() && board.isWhiteStoneToolSetted()))"
+                                   ((board.isGameModeSetted() && !board.isGameEnded() && board.isWhiteTurn())
+                                 || (board.isFreeModeSetted() && board.isWhiteStoneToolSetted()))"
+                [class.captured_mark_hover]="board.isCountingModeSetted() &&
+                                            !board.isEmpty(cell_index, line_index) &&
+                                             board.isGameEnded()"
                 id="{{ line_index + '_' + cell_index }}"
                 class="cell">
-            <span [class.black]="board.getPosition(cell_index, line_index) !== 0
-                              && board.getPosition(cell_index, line_index) === 1"
-                  [class.white]="board.getPosition(cell_index, line_index) !== 0
-                              && board.getPosition(cell_index, line_index) === 2"
+            <span [class.black]="board.getCell(cell_index, line_index).hasBlackStone()"
+                  [class.white]="board.getCell(cell_index, line_index).hasWhiteStone()"
+                  [class.captured_mark]="board.isMarked(cell_index, line_index)"
                   class="stone">
             </span>
           </span>
-
         </div>
       </div>
     </div>
