@@ -14,6 +14,6 @@ export class MoveType implements Printable{
     console.log(this.toString());
   }
   public toString(): string {
-    return "";
+    return "empty";
   }
 }

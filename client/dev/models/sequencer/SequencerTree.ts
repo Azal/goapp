@@ -131,12 +131,9 @@ export class SequencerTree implements GenericTree<SequencerNode>, Printable {
     }
 
     if (this._currentNode.isGroup()) {
-      this._currentNode.addElement(new SequencerGroupElement(treeData));
-      return true;
+      return this._currentNode.addElement(new SequencerGroupElement(treeData));
     } else {
       let node: SequencerGroupNode = new SequencerGroupNode(treeData);
-      node.addElement(new SequencerGroupElement(treeData));
-
       let addedNode: SequencerNode = this.addChildFromCurrent(node);
 
       if (addedNode) {

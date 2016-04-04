@@ -11,6 +11,6 @@ export class PassMoveType extends MoveType {
     return true;
   }
   public toString(): string {
-    return "empty";
+    return "pass";
   }
 }

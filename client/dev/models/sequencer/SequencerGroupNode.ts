@@ -3,15 +3,21 @@ import {SequencerNode} from "./SequencerNode";
 import {SequencerGroupElement} from "./SequencerGroupElement"
 
 export class SequencerGroupNode extends SequencerNode {
-  _elements: SequencerGroupElement[];
+  _elements: Object = {};
 
   constructor(data?: SequencerTreeData) {
     super(data);
-    this._elements = [];
+    this._elements[data.getKey()] = new SequencerGroupElement(data);
   }
 
-  public addElement(element: SequencerGroupElement): void {
-    this._elements.push(element);
+  public addElement(element: SequencerGroupElement): boolean {
+    if (this._elements[element.getKey()]) {
+      console.log("Cannot add sequence to current group, already binded: " + element.getKey());
+      return false;
+    } else {
+      this._elements[element.getKey()] = element;
+      return true;
+    }
   }
 
   public toString(): string {

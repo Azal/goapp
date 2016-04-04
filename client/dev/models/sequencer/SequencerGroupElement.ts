@@ -15,4 +15,8 @@ export class SequencerGroupElement implements Printable {
   public toString(): string {
     return this._data.toString();
   }
+
+  public getKey(): string {
+    return this._data.getKey();
+  }
 }
