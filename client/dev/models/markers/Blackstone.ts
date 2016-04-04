@@ -7,6 +7,10 @@ export class Blackstone extends Stone {
   }
 
   public toString(): string {
-    return "blackstone:" + this._innerValue;
+    return "black";
+  }
+
+  public isNotEmpty(): boolean {
+    return true;
   }
 }

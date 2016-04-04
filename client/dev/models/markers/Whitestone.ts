@@ -7,6 +7,10 @@ export class Whitestone extends Stone {
   }
 
   public toString(): string {
-    return "whitestone:" + this._innerValue;
+    return "white";
+  }
+
+  public isNotEmpty(): boolean {
+    return true;
   }
 }

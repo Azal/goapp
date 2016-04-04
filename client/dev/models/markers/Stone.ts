@@ -1,4 +1,5 @@
-import {Printable} from "../interfaces/Printable";
+import {Printable} from "../../interfaces/Printable";
+import {Marker} from "./Marker"
 
 /* Board Logic and internal representation
 /* The board saves:
@@ -6,10 +7,11 @@ import {Printable} from "../interfaces/Printable";
 /* 1: for black stone on cell,
 /* 2: for white stone on cell
 /**/
-export class Stone implements Printable {
+export class Stone extends Marker implements Printable {
   protected _innerValue: number;
 
   constructor() {
+    super("");
     this._innerValue = 0;
   }
 
@@ -25,5 +27,13 @@ export class Stone implements Printable {
     if (console) {
       console.log(this.toString());
     }
+  }
+
+  public isAStone(): boolean {
+    return true;
+  }
+
+  public isAMarker(): boolean {
+    return false;
   }
 }
