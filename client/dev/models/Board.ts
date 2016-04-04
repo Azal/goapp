@@ -410,7 +410,7 @@ export class Board {
       for (j = 0; j < this._size; ++j) {
         if (this._board[i][j].isMarkedAsPoint()) {
           count += 1;
-          this._board[i][j].reset();
+          this._board[i][j].clean();
         }
       }
     }
@@ -425,7 +425,7 @@ export class Board {
     for (i = 0; i < this._size; ++i) {
       for (j = 0; j < this._size; ++j) {
         if (this._board[i][j].isMarkedAsPoint()) {
-          this._board[i][j].reset();
+          this._board[i][j].clean();
         }
       }
     }

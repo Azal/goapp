@@ -352,7 +352,15 @@ export class Cell {
     this._liberties = -1;
     this._group_id = 0;
     this._mark_to_remove = false;
-    // this._was_visited = false;
+    this._was_visited = false;
+  }
+
+  /** Clean Cell */
+  public clean(): void {
+    this._state = 0;
+    this._liberties = -1;
+    this._group_id = 0;
+    this._mark_to_remove = false;
   }
 
   /** String representation of a Cell */
