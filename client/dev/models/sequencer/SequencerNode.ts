@@ -11,11 +11,13 @@ export class SequencerNode implements GenericNode<SequencerTreeData, SequencerNo
   _nodes: Object = {};
   private _deep: number;
   protected _key: Guid;
+  private _mainBranch: boolean;
 
   constructor(data?: SequencerTreeData) {
     if (data) {
       this._data = data;
     }
+    this._mainBranch = false;
     this._deep = 0;
     this._key = Guid.MakeNew();
   }
@@ -72,6 +74,7 @@ export class SequencerNode implements GenericNode<SequencerTreeData, SequencerNo
   public addChild(child: SequencerNode): SequencerNode {
     if (!this._data) {
       this.copyNode(child);
+      this._mainBranch = true;
       return this;
     }
     let childKey = child.getNodeKey();
@@ -85,6 +88,21 @@ export class SequencerNode implements GenericNode<SequencerTreeData, SequencerNo
       this._nodes[childKey] = child;
       child.parent = this;
       child.deep = this.deep + 1;
+
+      if (child.parent && !child.parent._mainBranch) {
+        child._mainBranch = false;
+      } else {
+        let brotherCount: number = 0;
+        for (let key in this._nodes) {
+          let node = this._nodes[key];
+          brotherCount = brotherCount + 1;
+        };
+
+        if (brotherCount ===  1) {
+          child._mainBranch = true;
+        }
+      }
+
       return child;
     }
   }
@@ -138,7 +156,7 @@ export class SequencerNode implements GenericNode<SequencerTreeData, SequencerNo
 
   public toString(): string {
     if (this._data) {
-      let strNode = "[key: " + this._key + "][deep:" + this._deep + "][data: " + this._data.toString() + "] <br/>";
+      let strNode = "[key: " + this._key + "][main: " + this._mainBranch + "][deep:" + this._deep + "][data: " + this._data.toString() + "] <br/>";
 
       for (let key in this._nodes) {
         let node = this._nodes[key];
