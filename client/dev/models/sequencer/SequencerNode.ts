@@ -20,11 +20,11 @@ export class SequencerNode implements GenericNode<SequencerTreeData, SequencerNo
     this._key = Guid.MakeNew();
   }
 
-  public get deep() : number {
+  public get deep(): number {
     return this._deep;
   }
 
-  public set deep(v : number) {
+  public set deep(v: number) {
     this._deep = v;
   }
 
@@ -65,8 +65,8 @@ export class SequencerNode implements GenericNode<SequencerTreeData, SequencerNo
     return;
   }
 
-  public addElement(element: SequencerGroupElement): void {
-    return;
+  public addElement(element: SequencerGroupElement): boolean {
+    return false;
   }
 
   public addChild(child: SequencerNode): SequencerNode {
@@ -92,18 +92,12 @@ export class SequencerNode implements GenericNode<SequencerTreeData, SequencerNo
   public removeChild(child: SequencerNode): boolean {
     let childNodeKey = child.getNodeKey();
     if (this._nodes[childNodeKey]) {
-      let node = this._nodes[childNodeKey];
-      node.parent = undefined;
-      this._nodes[childNodeKey] = undefined;
+      this._nodes[childNodeKey] = null;
+      delete(this._nodes[childNodeKey]);
       return true;
+    } else {
+      return false;
     }
-    for (let key in this._nodes) {
-      let node = this._nodes[key];
-      if (node.removeChild(child)) {
-        return true;
-      }
-    }
-    return false;
   }
 
   public searchChild(key: string): SequencerNode {

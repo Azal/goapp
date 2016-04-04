@@ -1,6 +1,6 @@
 import {Printable} from "../../interfaces/Printable";
 
-export class Marker implements Printable{
+export class Marker implements Printable {
   protected _key: string;
 
   constructor(key: string) {

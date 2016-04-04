@@ -1,6 +1,6 @@
 import {SequencerTreeData} from "./SequencerTreeData";
 import {SequencerNode} from "./SequencerNode";
-import {SequencerGroupElement} from "./SequencerGroupElement"
+import {SequencerGroupElement} from "./SequencerGroupElement";
 
 export class SequencerGroupNode extends SequencerNode {
   _elements: Object = {};
@@ -21,7 +21,7 @@ export class SequencerGroupNode extends SequencerNode {
   }
 
   public toString(): string {
-    let elements = []
+    let elements = [];
 
     for (let key in this._elements) {
       let element = this._elements[key];

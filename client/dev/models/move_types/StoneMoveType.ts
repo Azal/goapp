@@ -1,4 +1,4 @@
-import {MoveType} from "./MoveType"
+import {MoveType} from "./MoveType";
 
 export class StoneMoveType extends MoveType {
   public isAStone() {

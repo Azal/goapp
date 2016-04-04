@@ -5,7 +5,7 @@ import {MoveType} from "../move_types/MoveType";
 import {Keyable} from "../../interfaces/Keyable";
 import {Printable} from "../../interfaces/Printable";
 
-export class SequencerTreeData implements Keyable, Printable{
+export class SequencerTreeData implements Keyable, Printable {
   private _moveType: string;
   private _markType: string;
   private _x: number;
@@ -22,33 +22,33 @@ export class SequencerTreeData implements Keyable, Printable{
     this._mark = MarkerFactory.makeNew(markType);
   }
 
-  public get moveType() : string {
+  public get moveType(): string {
     return this._moveType;
   }
-  public set moveType(v : string) {
+  public set moveType(v: string) {
     this._moveType = v;
     this._move = MoveTypeFactory.makeNew(v);
   }
 
-  public get markType() : string {
+  public get markType(): string {
     return this._markType;
   }
-  public set markType(v : string) {
+  public set markType(v: string) {
     this._markType = v;
     this._mark = MarkerFactory.makeNew(v);
   }
 
-  public get x() : number {
+  public get x(): number {
     return this._x;
   }
-  public set x(v : number) {
+  public set x(v: number) {
     this._x = v;
   }
 
-  public get y() : number {
+  public get y(): number {
     return this._y;
   }
-  public set y(v : number) {
+  public set y(v: number) {
     this._y = v;
   }
 

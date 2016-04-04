@@ -1,6 +1,6 @@
 import {Printable} from "../../interfaces/Printable";
 
-export class MoveType implements Printable{
+export class MoveType implements Printable {
   public isAStone(): boolean {
     return false;
   }

@@ -57,13 +57,11 @@ export class SequenceTreeComponent {
 
   public removeGameSequence() {
     if (this.currentKey.length > 0) {
-      alert("To do");
-    } else {
-      alert("Key not specified");
+      this.tree.removeChild(this.currentKey);
     }
   }
 
-  public currentNodeString(){
+  public currentNodeString() {
     if (this.currentNode) {
       return this.currentNode.toString();
     } else {

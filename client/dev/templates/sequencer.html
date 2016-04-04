@@ -33,6 +33,7 @@
     Sequence Key: <input [(ngModel)]="currentKey">
     <button class="btn-yellow" *ngIf="sequenceKeyDefined()" (click)="seekAndAddSequence();">Add sequence to key</button>
     <button class="btn-yellow" *ngIf="sequenceKeyDefined()" (click)="seekAndAddSequenceGroupElement();">Add sequence group elemn to key</button>
+    <button class="btn-red" *ngIf="sequenceKeyDefined()" (click)="removeGameSequence();">Remove sequence node by key</button>
 
     <span (ngModel)="searchResult"></span>
     <div class="clearfix"></div>

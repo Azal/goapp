@@ -15,6 +15,10 @@ export class SequencerTree implements GenericTree<SequencerNode>, Printable {
   private _count: number;
 
   constructor() {
+    this.reset();
+  }
+
+  private reset(): void {
     this._head = new SequencerNode();
     this._currentNode = this._head;
     this._turn = 0;
@@ -69,15 +73,39 @@ export class SequencerTree implements GenericTree<SequencerNode>, Printable {
     }
   }
 
-  public removeChild(key: string): boolean {
+  public removeChild(key: string): SequencerNode {
     let node = this.searchChild(key);
     if (node) {
-      if (node.parent) {
-        return node.parent.removeChild(node);
-      }
       delete(this._accessor[node.getKey()]);
+      if (node.parent) {
+        node.parent.removeChild(node);
+
+        if (node.getKey() === this._currentNode.getKey()) {
+          this._currentNode = node.parent;
+        }
+
+        let nodeIterator: SequencerNode = this._currentNode;
+        let nodeOnRoad: boolean = false;
+
+        while (nodeIterator) {
+          if (nodeIterator.getKey() === key) {
+            nodeIterator = nodeIterator.parent;
+            nodeOnRoad = true;
+            break;
+          } else {
+            nodeIterator = nodeIterator.parent;
+          }
+        }
+
+        if (nodeOnRoad && nodeIterator) {
+          this._currentNode = nodeIterator;
+        }
+
+       } else {
+        this.reset();
+      }
     }
-    return false;
+    return this._currentNode;
   }
 
   public searchChild(key: string): SequencerNode {
@@ -103,11 +131,15 @@ export class SequencerTree implements GenericTree<SequencerNode>, Printable {
   /* END Interface methods */
 
   /* Begin Game Methods */
-  public addSequence(moveType: string, x: number, y: number, markType: string): boolean {
+  public addPassSequence(): SequencerNode {
+    return this.addSequence("pass", -1, -1, "");
+  }
+
+  public addSequence(moveType: string, x: number, y: number, markType: string): SequencerNode {
     let treeData: SequencerTreeData = new SequencerTreeData(moveType, markType, x, y);
     if (!treeData.valid()) {
       console.log("Invalid Sequence Data");
-      return false;
+      return null;
     }
 
     let node = new SequencerNode(treeData);
@@ -117,21 +149,22 @@ export class SequencerTree implements GenericTree<SequencerNode>, Printable {
       this._currentNode = addedNode;
       this._turn = addedNode.deep + 1;
       this._accessor[addedNode.getKey()] = addedNode;
-      return true;
     } else {
-      return false;
+      console.log("Node not added");
+      return null;
     }
+    return this._currentNode;
   }
 
-  public addSequenceGroupElement(moveType: string, x: number, y: number, markType: string): boolean {
+  public addSequenceGroupElement(moveType: string, x: number, y: number, markType: string): SequencerNode {
     let treeData: SequencerTreeData = new SequencerTreeData(moveType, markType, x, y);
     if (!treeData.valid()) {
       console.log("Invalid Sequence Data");
-      return false;
+      return null;
     }
 
     if (this._currentNode.isGroup()) {
-      return this._currentNode.addElement(new SequencerGroupElement(treeData));
+      this._currentNode.addElement(new SequencerGroupElement(treeData));
     } else {
       let node: SequencerGroupNode = new SequencerGroupNode(treeData);
       let addedNode: SequencerNode = this.addChildFromCurrent(node);
@@ -139,25 +172,26 @@ export class SequencerTree implements GenericTree<SequencerNode>, Printable {
       if (addedNode) {
         this._currentNode = addedNode;
         this._accessor[addedNode.getKey()] = addedNode;
-        return true;
       } else {
-        return false;
+        console.log("Node not added");
+        return null;
       }
+      return this._currentNode;
     }
   }
 
-  public seekAndAddSequence(key: string, moveType: string, x: number, y: number, markType: string): boolean {
+  public seekAndAddSequence(key: string, moveType: string, x: number, y: number, markType: string): SequencerNode {
     let seekResult = this.seekChild(key);
     if (!seekResult) {
-      return false;
+      return null;
     }
     return this.addSequence(moveType, x, y, markType);
   }
 
-  public seekAndAddSequenceGroupElement(key: string, moveType: string, x: number, y: number, markType: string): boolean {
+  public seekAndAddSequenceGroupElement(key: string, moveType: string, x: number, y: number, markType: string): SequencerNode {
     let seekResult = this.seekChild(key);
     if (!seekResult) {
-      return false;
+      return null;
     }
     return this.addSequenceGroupElement(moveType, x, y, markType);
   }

@@ -16,9 +16,9 @@ export class MarkerFactory {
       let matches: string[] = key.match("^([a-zA-Z]{1})_letter$");
       // letter
       return new LetterMarker(matches[1]);
-    } else if (key == "white") {
+    } else if (key === "white") {
       return new Whitestone();
-    } else if (key == "black") {
+    } else if (key === "black") {
       return new Blackstone();
     } else {
       return new PassMarker("pass");

@@ -1,4 +1,4 @@
-import {Marker} from "./Marker"
+import {Marker} from "./Marker";
 
 export class PassMarker extends Marker {
   constructor(key: string) {
