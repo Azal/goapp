@@ -24,6 +24,7 @@ export class Cell {
   private _parent_board: Board;
   private _mark_to_remove: boolean;
   private _was_visited: boolean;
+  private _neighbors: Cell[];
 
   constructor(x: number, y: number, board: Board) {
     this._x = x;
@@ -34,6 +35,9 @@ export class Cell {
     this._group_id = 0;
     this._mark_to_remove = false;
     this._was_visited = false;
+
+    /* Backup for neighbors cells */
+    this._neighbors = [];
   }
 
   /** Getters and Setters */
@@ -43,6 +47,14 @@ export class Cell {
 
   public getPosY(): number {
     return this._y;
+  }
+
+  public getNeighbors(): Cell[] {
+    return this._neighbors;
+  }
+
+  public saveNeighbors(neighbors: Cell[]): void {
+    this._neighbors = neighbors;
   }
 
   public getLiberties(): number {
@@ -141,17 +153,13 @@ export class Cell {
 
     /* Removing enemy stones first! */
     for (var enemyCell of enemyCells) {
-      response = board.removingStonesFrom(enemyCell, false);
+      response = board.removingStonesFrom(enemyCell);
 
       if (response) {
         removedStones = board.removeAllMarkedToRemoveCells();
-        console.log("Removing " + removedStones + " enemy stones");
 
         /* Check if possible Ko situation arise after the capture */
         if (removedStones === 1) {
-          console.log("Posible Ko situation!");
-          console.log("Added " + enemyCell.toString("coords"));
-
           board.savePossibleKo(enemyCell);
         }
       } else {
@@ -160,7 +168,7 @@ export class Cell {
     }
 
     /* Removing friendly stones on suicide case: Not allowed for now! */
-    // response = board.removingStonesFrom(this, false);
+    // response = board.removingStonesFrom(this);
 
     // if (response) {
     //   console.log("Removing friend stones");
@@ -246,8 +254,8 @@ export class Cell {
 
   public removeStone(): void {
     this._state = 0;
-    this._liberties = -1;
     this._group_id = 0;
+    this._liberties = -1;
     this._mark_to_remove = false;
   }
 

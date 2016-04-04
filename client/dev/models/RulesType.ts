@@ -1,6 +1,8 @@
 /*
 /* Rule information for main types
 /*
+/* Reference: https://online-go.com/docs/go-rules-comparison-matrix
+/*
 /**/
 export class RulesType {
   /* Rules names */
@@ -26,7 +28,6 @@ export class RulesType {
   /*   "scoring": ""                           /* territory, area, any */
   /* }
   /* */
-
 
   /* Rules default settings */
   public static getDefaultRulesFor(rule_type: string) {

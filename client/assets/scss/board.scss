@@ -7,12 +7,15 @@
 
 .board {
   margin: 0 auto;
+  padding: 15px;
   width: 798px;
   height: 798px;
-  border: 1px black solid;
+  border: 1px solid #000;
   border-radius: 3px;
-  background-image: url(../../assets/images/bg-board.png);
-  background-repeat: repeat-y;
+  background-image: url(../../assets/images/board_grid.png);
+  background-repeat: no-repeat;
+  background-size: 92%;
+  background-position: 34px 34px;
 
   .line {
     display: block;

@@ -144,7 +144,7 @@ export class GameRules {
 
     /* Removing enemy stones first! */
     for (var enemyCell of enemyCells) {
-      tmp = this._board.removingStonesFrom(enemyCell, false); /* check with true */
+      tmp = this._board.removingStonesFrom(enemyCell);
       this._board.cleanAllMarkedToRemove();
 
       if (tmp) {
@@ -157,7 +157,7 @@ export class GameRules {
     }
 
     /* Removing friendly stones */
-    response = this._board.removingStonesFrom(cell, false);
+    response = this._board.removingStonesFrom(cell);
     this._board.cleanAllMarkedToRemove();
     cell.cleanValidationState();
 
@@ -205,11 +205,11 @@ export class GameRules {
     console.log("Black points on board: " + blackPoints);
     console.log("Captured by White: " + this._board.getCapturedBlackStones());
     console.log("Captured by Black: " + this._board.getCapturedWhiteStones());
-    console.log("Black captured on board: " + this._board.getBlackStonesCapturedOnBoard());
-    console.log("White captured on board: " + this._board.getWhiteStonesCapturedOnBoard());
+    console.log("Black captured on board: " + this._board.getCapturedBlackStonesOnBoard());
+    console.log("White captured on board: " + this._board.getCapturedWhiteStonesOnBoard());
 
-    result = whitePoints + this._board.getBlackStonesCapturedOnBoard() * 2 + this._board.getCapturedBlackStones() + this._komi
-           - blackPoints - this._board.getWhiteStonesCapturedOnBoard() * 2 - this._board.getCapturedWhiteStones();
+    result = whitePoints + this._board.getCapturedBlackStonesOnBoard() * 2 + this._board.getCapturedBlackStones() + this._komi
+      - blackPoints - this._board.getCapturedWhiteStonesOnBoard() * 2 - this._board.getCapturedWhiteStones();
 
     if (result < 0) {
       result *= -1;
