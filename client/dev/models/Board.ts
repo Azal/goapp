@@ -4,6 +4,7 @@
 /**/
 import {Cell} from './Cell'
 import {GameRules} from './GameRules'
+import {SequencerTree} from "./sequencer/SequencerTree";
 
 export class Board {
   private _name: string;
@@ -25,6 +26,7 @@ export class Board {
   private _black_captured_on_board: number;
   private _white_captured_on_board: number;
   private _extra_turns: number;
+  private _sequencer_tree: SequencerTree;
 
   constructor(board_settings, game_rules) {
     this._name = board_settings["name"];
@@ -46,6 +48,8 @@ export class Board {
     this._black_captured_on_board = 0;
     this._white_captured_on_board = 0;
     this._extra_turns = 0;
+
+    this._sequencer_tree = new SequencerTree();
 
     var i: number, j: number;
 
@@ -108,6 +112,10 @@ export class Board {
 
   public getCell(x: number, y: number): Cell {
     return this._board[x][y];
+  }
+
+  public getBoardTree(): SequencerTree {
+    return this._sequencer_tree;
   }
 
   public getNeighborsOf(cell: Cell): Cell[] {
@@ -198,6 +206,9 @@ export class Board {
     this._followed_turn_passes += 1;
     this._current_turn = (this._current_turn === "black") ? "white" : "black";
 
+    /* Updating Sequencer Tree */
+    this._sequencer_tree.addPassSequence();
+
     /** TODO: End Game Instructions here! */
     if (this._followed_turn_passes === 2) {
       this._game_ended = true;
@@ -261,6 +272,9 @@ export class Board {
           this._moves_count += 1;
           this._possible_kos = [];
           this._followed_turn_passes = 0;
+
+          /* Updating Sequencer Tree */
+          this._sequencer_tree.addSequenceGroupElement("stone", x, y, color);
         } else {
           console.log("Invalid move at: (" + x + ", " + y + ") by a " + color + " stone!");
         }
@@ -272,6 +286,9 @@ export class Board {
         this._board[x][y].playStone(this._current_turn, this.getNextGroupId());
         this._moves_count += 1;
         this._followed_turn_passes = 0;
+
+        /* Updating Sequencer Tree */
+        this._sequencer_tree.addSequence("stone", x, y, this._current_turn);
 
         if (!this._skip_ko_clean_up) {
           this._possible_kos = [];
