@@ -27,6 +27,8 @@ export class Board {
   private _white_captured_on_board: number;
   private _extra_turns: number;
   private _sequencer_tree: SequencerTree;
+  private _seen_color_black: boolean;
+  private _seen_color_white: boolean;
 
   constructor(board_settings, game_rules) {
     this._name = board_settings["name"];
@@ -48,6 +50,8 @@ export class Board {
     this._black_captured_on_board = 0;
     this._white_captured_on_board = 0;
     this._extra_turns = 0;
+    this._seen_color_black = false;
+    this._seen_color_white = false;
 
     this._sequencer_tree = new SequencerTree();
 
@@ -61,23 +65,20 @@ export class Board {
       }
     }
 
-    /* Placing handicap stones or given extra turns. UPDATE LATER with real rules type! */
-    if (game_rules["handicap"] > 0) {
-      game_rules["komi"] = 0.5;
-    }
+    /* Initiating Game Rules */
+    this._game_rules = new GameRules(game_rules, this);
 
-    this._game_rules = new GameRules(this, game_rules);
-
+    /* Placing handicap stones or given extra turns */
     if (this._mode === "game") {
-      if (1 < game_rules["handicap"] && game_rules["handicap"] <= 9) {
-        if (game_rules["type"] === "japanese") {
+      if (0 < game_rules["handicap"]) {
+        if (this._game_rules.isHandicapType("fixed")) {
           this.placeHandicapStones(game_rules["handicap"]);
           this._current_turn = "white";
-        } else if (game_rules["type"] === "chinese") {
+        } else if (this._game_rules.isHandicapType("free")) {
           this._extra_turns = game_rules["handicap"];
         }
-      } else if (game_rules["handicap"] === 1) {
-        game_rules["komi"] = 0.5;
+
+        this._game_rules.setKomi(0.5);
       }
     }
 
@@ -85,7 +86,7 @@ export class Board {
     console.log(this);
   }
 
-  /** Getters and Setters */
+  /* Getters and Setters */
   public getName(): string {
     return this._name;
   }
@@ -104,10 +105,6 @@ export class Board {
 
   public getGameRules(): GameRules {
     return this._game_rules;
-  }
-
-  public getBoard(): Cell[][] {
-    return this._board;
   }
 
   public getCell(x: number, y: number): Cell {
@@ -184,6 +181,14 @@ export class Board {
     return this._moves_count;
   }
 
+  public hasSeenColorBlack(): boolean {
+    return this._seen_color_black;
+  }
+
+  public hasSeenColorWhite(): boolean {
+    return this._seen_color_white;
+  }
+
   public setMode(mode: string): void {
     this._mode = mode;
     this._free_tool = "black_stone";
@@ -199,6 +204,14 @@ export class Board {
 
   public getFollowedTurnPasses(): number {
     return this._followed_turn_passes;
+  }
+
+  public setSeenColorBlack(seen_color_black: boolean): void {
+    this._seen_color_black = seen_color_black;
+  }
+
+  public setSeenColorWhite(seen_color_white: boolean): void {
+    this._seen_color_white = seen_color_white;
   }
 
   /** Logic for passes moves */
@@ -332,7 +345,7 @@ export class Board {
   }
 
   /** Floodfill implementation setted for removal of captured stones */
-  public removingStonesFrom(cell: Cell): boolean {
+  public removeStonesFrom(cell: Cell): boolean {
     var response: boolean = true;
 
     cell.markToRemove();
@@ -340,7 +353,41 @@ export class Board {
     if (cell.getLiberties() === 0) {
       for (var friendCell of this.getNeighborsOf(cell).filter(_cell => _cell.hasSameColorWith(cell))) {
         if (! friendCell.isMarkedToRemove()) {
-          response = response && this.removingStonesFrom(friendCell);
+          response = response && this.removeStonesFrom(friendCell);
+        }
+      }
+
+      return response;
+    } else {
+      return false;
+    }
+  }
+
+  /** Floodfill implementation setted for counting territories */
+  public countTerritoryFrom(cell: Cell): boolean {
+    if (cell.isEmpty()) {
+      var response: boolean = true;
+      var neighborCells: Cell[] = this.getNeighborsOf(cell);
+
+      cell.markAsPoint();
+      cell.visitForCounting();
+
+      if (!this._seen_color_black && 0 < neighborCells.filter(_cell => _cell.hasBlackStone() && !_cell.isMarkedAsCaptured()).length) {
+        this._seen_color_black = true;
+      }
+
+      if (!this._seen_color_white && 0 < neighborCells.filter(_cell => _cell.hasWhiteStone() && !_cell.isMarkedAsCaptured()).length) {
+        this._seen_color_white = true;
+      }
+
+      /* Dame territory detected */
+      if (this._seen_color_black && this._seen_color_white) {
+        return false;
+      }
+
+      for (var emptyCell of neighborCells.filter(_cell => _cell.isEmpty() && !_cell.isMarkedAsCaptured())) {
+        if (!emptyCell.isMarkedAsPoint()) {
+          response = response && this.countTerritoryFrom(emptyCell);
         }
       }
 
