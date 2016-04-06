@@ -1,5 +1,5 @@
-/node_modules
+node_modules/*
 /app
 /src
 *npm-debug.log
-bower_components/
+bower_components/*
