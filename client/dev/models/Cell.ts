@@ -129,7 +129,6 @@ export class Cell {
 
   /** Helpers */
   public playStone(color: string, group_id: number): void {
-    // console.log("Playing " + color + " stone at: " + this.toString("coords"));
     var board: Board = this._parent_board;
 
     /* Actual play */
@@ -138,22 +137,23 @@ export class Cell {
     } else if (color === "white") {
       this._state = 2;
     }
+
     this._group_id = group_id;
 
     var neighborCells: Cell[] = board.getNeighborsOf(this);
-    var friendCells: Cell[] = neighborCells.filter(_cell => _cell.hasSameColorWith(this));
+    // var friendCells: Cell[] = neighborCells.filter(_cell => _cell.hasSameColorWith(this));
     var enemyCells: Cell[] = neighborCells.filter(_cell => !(_cell.isEmpty() || _cell.hasSameColorWith(this)));
 
-    var defaultLiberties: number = neighborCells.length; /* It changes if it is a corner, border or center cell */
-    var newLiberties: number = defaultLiberties - enemyCells.length;
-    var visitedGroupsIds: number[] = [];
-    var currentGroupId: number;
+    // var defaultLiberties: number = neighborCells.length; /* It changes if it is a corner, border or center cell */
+    // var newLiberties: number = defaultLiberties - enemyCells.length;
+    // var visitedGroupsIds: number[] = [];
+    // var currentGroupId: number;
     var removedStones: number;
     var response: boolean;
 
     /* Removing enemy stones first! */
     for (var enemyCell of enemyCells) {
-      response = board.removingStonesFrom(enemyCell);
+      response = board.removeStonesFrom(enemyCell);
 
       if (response) {
         removedStones = board.removeAllMarkedToRemoveCells();
@@ -168,60 +168,60 @@ export class Cell {
     }
 
     /* Removing friendly stones on suicide case: Not allowed for now! */
-    // response = board.removingStonesFrom(this);
+      // response = board.removeStonesFrom(this);
 
-    // if (response) {
-    //   console.log("Removing friend stones");
-    //   board.removeAllMarkedToRemoveCells();
-    // } else {
-    //   board.cleanAllMarkedToRemove();
-    // }
+      // if (response) {
+      //   console.log("Removing friend stones");
+      //   board.removeAllMarkedToRemoveCells();
+      // } else {
+      //   board.cleanAllMarkedToRemove();
+      // }
 
     /* Update liberties of friend neighbor groups */
-    // for (var neighborCell of friendCells) {
-    //   currentGroupId = neighborCell.getGroupId();
+      // for (var neighborCell of friendCells) {
+      //   currentGroupId = neighborCell.getGroupId();
 
-    //   if (visitedGroupsIds.indexOf(currentGroupId) > -1) {
-    //     newLiberties -= 1;
-    //   } else {
-    //     newLiberties = neighborCell.getLiberties() + newLiberties - 2;
+      //   if (visitedGroupsIds.indexOf(currentGroupId) > -1) {
+      //     newLiberties -= 1;
+      //   } else {
+      //     newLiberties = neighborCell.getLiberties() + newLiberties - 2;
 
-    //     /* Check shared liberties with the other stones of this neighbord group */
-    //     var sharedAmount: number = this.shareLibertiesWithGroupById(neighborCell.getGroupId());
-    //     if (sharedAmount > 0) {
-    //       newLiberties -= sharedAmount;
-    //     }
+      //     /* Check shared liberties with the other stones of this neighbord group */
+      //     var sharedAmount: number = this.shareLibertiesWithGroupById(neighborCell.getGroupId());
+      //     if (sharedAmount > 0) {
+      //       newLiberties -= sharedAmount;
+      //     }
 
-    //     /* Check shared liberties with already checked neighbors */
-    //     for (var visitedCell of friendCells.filter(_cell => visitedGroupsIds.indexOf(_cell.getGroupId()) > -1)) {
-    //       if (neighborCell.shareLibertiesWith(visitedCell)) {
-    //         newLiberties -= 1;
-    //       }
-    //     }
+      //     /* Check shared liberties with already checked neighbors */
+      //     for (var visitedCell of friendCells.filter(_cell => visitedGroupsIds.indexOf(_cell.getGroupId()) > -1)) {
+      //       if (neighborCell.shareLibertiesWith(visitedCell)) {
+      //         newLiberties -= 1;
+      //       }
+      //     }
 
-    //     visitedGroupsIds.push(currentGroupId);
-    //   }
-    // }
+      //     visitedGroupsIds.push(currentGroupId);
+      //   }
+      // }
 
     /* Update liberties of enemy neighbor groups */
-    // visitedGroupsIds = [];
-    // var groupsForRestore: Cell[] = [];
-    // var restore: boolean;
+      // visitedGroupsIds = [];
+      // var groupsForRestore: Cell[] = [];
+      // var restore: boolean;
 
-    // for (var neighborCell of enemyCells) {
-    //   currentGroupId = neighborCell.getGroupId();
+      // for (var neighborCell of enemyCells) {
+      //   currentGroupId = neighborCell.getGroupId();
 
-    //   if (!(visitedGroupsIds.indexOf(currentGroupId) > -1)) {
-    //     visitedGroupsIds.push(currentGroupId);
+      //   if (!(visitedGroupsIds.indexOf(currentGroupId) > -1)) {
+      //     visitedGroupsIds.push(currentGroupId);
 
-    //     if (neighborCell.getLiberties() - 1 === 0) {
-    //       restore = true;
-    //       groupsForRestore = board.getNeighborsOf(neighborCell);
-    //     }
+      //     if (neighborCell.getLiberties() - 1 === 0) {
+      //       restore = true;
+      //       groupsForRestore = board.getNeighborsOf(neighborCell);
+      //     }
 
-    //     board.setAllCellsWithIdToLiberties(currentGroupId, neighborCell.getLiberties() - 1);
-    //   }
-    // }
+      //     board.setAllCellsWithIdToLiberties(currentGroupId, neighborCell.getLiberties() - 1);
+      //   }
+      // }
 
     /* Update groups information */
     for (var neighborCell of neighborCells) {
@@ -233,19 +233,19 @@ export class Cell {
     // board.setAllCellsWithIdToLiberties(this.getGroupId(), newLiberties);
 
     /* Restore liberties if necessary */
-    // var restoreGroupsIds: number[] = [];
+      // var restoreGroupsIds: number[] = [];
 
-    // if (restore) {
-    //   console.log(groupsForRestore);
+      // if (restore) {
+      //   console.log(groupsForRestore);
 
-    //   for (var cell of groupsForRestore) {
-    //     if (!(restoreGroupsIds.indexOf(cell.getGroupId()) > -1)) {
-    //       visitedGroupsIds.push(cell.getGroupId());
+      //   for (var cell of groupsForRestore) {
+      //     if (!(restoreGroupsIds.indexOf(cell.getGroupId()) > -1)) {
+      //       visitedGroupsIds.push(cell.getGroupId());
 
-    //       board.setAllCellsWithIdToLiberties(cell.getGroupId(), cell.getLiberties() + 1);
-    //     }
-    //   }
-    // }
+      //       board.setAllCellsWithIdToLiberties(cell.getGroupId(), cell.getLiberties() + 1);
+      //     }
+      //   }
+      // }
   }
 
   public markAsCaptured(mark: string): void {

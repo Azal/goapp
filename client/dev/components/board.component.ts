@@ -15,7 +15,7 @@ export class BoardComponent {
 
   game_rules = {
     "type": "japanese",
-    "handicap": 0,
+    "handicap": 2,
     "main_time": 30,
     "byo_yomi_periods": 3,
     "byo_yomi_time": 30
