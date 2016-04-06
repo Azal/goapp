@@ -35,7 +35,7 @@
       <div class="clearfix"></div>
 
       <button class="btn-blue" (click)="playExampleSequence()">Play Example Sequence</button>
-      <button class="btn-blue" (click)="toggleBoardRepresentation()">Show Board Matrix</button>
+      <!--<button class="btn-blue" (click)="toggleBoardRepresentation()">Show Board Matrix</button>-->
       <div class="clearfix"></div>
 
       <div *ngIf="board.isGameEnded()">
@@ -61,13 +61,22 @@
       <p>Style: <span class="info">{{ board.getGameRules().getStyle() }}</span></p>
     </div>
 
-    <div class="two_columns">
+    <!--<div class="two_columns">
       <h3 *ngIf="showBoardRepresentation">Board represetation</h3>
 
       <div *ngIf="showBoardRepresentation" [innerHTML]="board.toString()"
             id="board_representation">
       </div>
+    </div>-->
+
+    <div class="two_columns">
+      <h3>Game Info</h3>
+
+      <p>Nodes count: <span class="info">{{ board.getBoardTree().getNodeCount() }}</span></p>
+      <p>Tree represetation:</p>
+      <div id="tree_representation" [innerHTML]="board.getBoardTree().toString()"></div>
     </div>
+    <div class="clearfix"></div>
   </div>
 
   <div class="second_column">
