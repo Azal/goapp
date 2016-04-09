@@ -1,11 +1,13 @@
-<div class="row">
+<loading [isRunning]="!active"></loading>
+
+<div *ngIf="active" class="row">
   <div class="col-xs-12 col-sm-4">
-    <form class="form" *ngIf="active" (ngSubmit)="onSubmit()" #loginForm="ngForm" novalidate>
+    <form class="form" (ngSubmit)="onSubmit()" #loginForm="ngForm" novalidate>
       <input type="email" name="email" style="display: none;">
       <div class="form-group">
         <label for="exampleInputEmail1">Email address</label>
         <input type="email" class="form-control" id="user-email" placeholder="Email" required="required" autocomplete="off"
-          [(ngModel)]="user.name" ngControl=name #name="ngForm">
+          [(ngModel)]="email" ngControl=name #name="ngForm">
 
         <div [hidden]="name.valid || name.pristine" class="alert alert-danger">
           Email is required
@@ -15,7 +17,7 @@
       <div class="form-group">
         <label for="user-password">Password</label>
         <input type="password" class="form-control" id="user-password" placeholder="Password" required="required"
-        [(ngModel)]="user.password" ngControl=pass #pass="ngForm">
+        [(ngModel)]="password" ngControl=pass #pass="ngForm">
 
         <div [hidden]="pass.valid || pass.pristine" class="alert alert-danger">
           Password is required
@@ -27,7 +29,7 @@
           <input type="checkbox" [(ngModel)]="checkMe"> Check me out
         </label>
       </div>
-      <button type="submit" class="btn btn-primary" [(onclick)]="onSubmit">Submit</button>
+      <button type="submit" class="btn btn-primary">Submit</button>
     </form>
   </div>
 </div>

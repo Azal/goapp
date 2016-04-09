@@ -5,12 +5,13 @@ import {HomeComponent} from './home.component';
 import {LoginComponent} from './login.component';
 import {UserComponent} from './user.component';
 import {RegisterComponent} from './register.component';
+import {LoadingComponent} from "./loading.component";
 
 import {User} from '../models/User';
 
 @Component({
   selector: 'go-web-app',
-  directives: [RouterLink, RouterOutlet, ROUTER_DIRECTIVES],
+  directives: [RouterLink, RouterOutlet, ROUTER_DIRECTIVES, LoadingComponent],
   templateUrl: 'dev/templates/app.html'
 })
 

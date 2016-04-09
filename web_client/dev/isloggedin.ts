@@ -1,5 +1,5 @@
 import {Injector} from 'angular2/core';
-import {appInjector} from './injectors/app.injector';
+import {appInjector} from './app.injector';
 import {UserService} from './services/user.service';
 import {Router, ComponentInstruction} from 'angular2/router';
 

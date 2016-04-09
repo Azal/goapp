@@ -6,5 +6,9 @@ import {Component} from 'angular2/core';
 })
 
 export class HomeComponent {
+  active: boolean = false;
 
+  constructor() {
+    this.active = true;
+  }
 }

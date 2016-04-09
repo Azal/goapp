@@ -14,6 +14,7 @@
     <script src="node_modules/rxjs/bundles/Rx.js"></script>
     <script src="node_modules/angular2/bundles/angular2.dev.js"></script>
     <script src="node_modules/angular2/bundles/router.dev.js"></script>
+    <script src="node_modules/angular2/bundles/http.dev.js"></script>
     <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 
@@ -34,12 +35,15 @@
     <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap-theme.css">
     <link rel="stylesheet" type="text/css" href="dev/assets/stylesheets/app.css">
+    <link rel="stylesheet" type="text/css" href="dev/assets/stylesheets/loaders.min.css">
 
   </head>
 
   <!-- 3. Display the application -->
   <body>
-    <go-web-app>Loading...</go-web-app>
+    <go-web-app>
+      <loading [isRunning]="true"></loading>
+    </go-web-app>
   </body>
 
 </html>
