@@ -1,23 +1,76 @@
-import {Injectable} from 'angular2/core';
-import {User} from '../models/User';
-import {ServicesInterface} from '../interfaces/ServicesInterface';
-
-export var USERS: User[] = [
-    {"id": 11, email: "aimmanager.com@example.com", "nickname": "Mr. Nice"},
-    {"id": 12, email: "aimmanager.com@example.com", "nickname": "Narco"},
-    {"id": 13, email: "aimmanager.com@example.com", "nickname": "Bombasto"},
-    {"id": 14, email: "aimmanager.com@example.com", "nickname": "Celeritas"},
-    {"id": 15, email: "aimmanager.com@example.com", "nickname": "Magneta"},
-    {"id": 16, email: "aimmanager.com@example.com", "nickname": "RubberMan"},
-    {"id": 17, email: "aimmanager.com@example.com", "nickname": "Dynama"},
-    {"id": 18, email: "aimmanager.com@example.com", "nickname": "Dr IQ"},
-    {"id": 19, email: "aimmanager.com@example.com", "nickname": "Magma"},
-    {"id": 20, email: "aimmanager.com@example.com", "nickname": "Tornado"}
-];
+import {Observable} from "rxjs/Observable";
+import {Injectable} from "angular2/core";
+import {Http, Headers} from "angular2/http";
+import {LocalStorage} from "../helpers/localstorage";
+import {CoreService} from "./core.service";
 
 @Injectable()
-export class UserService implements ServicesInterface<User> {
-  index() {
-    return USERS;
+export class UserService extends CoreService {
+  private loggedIn = false;
+
+  constructor(protected http: Http) {
+    super(http);
+    this.loggedIn = !!this.localStorage.getItem('auth_token');
+  }
+
+  login() {
+    this.loggedIn = true;
+  }
+
+  loginWithCredentials(email: string, password: string) {
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    let route = this.resourceUrl("login");
+
+    return this.http
+      .post(
+        route,
+        JSON.stringify({ email, password }),
+        { headers }
+      )
+      .map(res => res.json())
+      .map((res) => {
+        if (res.success) {
+          this.localStorage.setItem('auth_token', res.auth_token);
+          this.loggedIn = true;
+        }
+
+        return res.success;
+      });
+  }
+
+  register(email: string, password: string) {
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    let route = this.resourceUrl("user");
+
+    return this.http
+      .post(
+        route,
+        JSON.stringify({ email, password }),
+        { headers }
+      )
+      .map(res => res.json())
+      .map((res) => {
+        if (res.success) {
+          this.localStorage.setItem('auth_token', res.auth_token);
+          this.loggedIn = true;
+        }
+
+        return res.success;
+      });
+  }
+
+  logout(): void {
+    this.localStorage.removeItem('auth_token');
+    this.loggedIn = false;
+  }
+
+  isLoggedIn(): boolean {
+    return this.loggedIn;
+  }
+
+  check() {
+    return Observable.of(this.loggedIn);
   }
 }
