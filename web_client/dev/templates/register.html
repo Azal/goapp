@@ -22,11 +22,15 @@
         </div>
       </div>
 
-      <div class="checkbox">
-        <label>
-          <input type="checkbox" [(ngModel)]="checkMe"> Check me out
-        </label>
+      <div class="form-group">
+        <label for="password-confirmation">Confirm Password</label>
+        <input type="password" class="form-control" id="password-confirmation" placeholder="Confirm Password"
+        [(ngModel)]="user.confirm_password" ngControl=confirmation #confirmation="ngForm">
+        <div [hidden]="confirmation.valid || confirmation.pristine" class="alert alert-danger">
+          Password confirmation is required
+        </div>
       </div>
+
       <button type="submit" class="btn btn-primary" [(onclick)]="onSubmit">Submit</button>
     </form>
   </div>
