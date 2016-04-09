@@ -10,7 +10,8 @@
     "noImplicitAny": false
   },
   "filesGlob": [
-    "./api/**/*.ts"
+    "./api/controllers/*.ts",
+    "./api/models/*.ts"
   ],
   "exclude": [
     "node_modules",

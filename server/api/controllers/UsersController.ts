@@ -30,7 +30,7 @@ var UsersController = {
    * `UserController.logout()`
    */
   logout: function (req, res) {
-    rreq.session.me = null;
+    req.session.me = null;
     return res.json(true);
   },
 
