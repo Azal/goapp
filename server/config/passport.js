@@ -58,7 +58,7 @@ module.exports.passport = {
       clientSecret: 'c16c4dd5477385486e939ae53edd00ff',
       callbackURL: "http://goeditor.lvh.me:3000/auth/facebook/callback",
       scope: ['public_profile', 'email'],
-      profileFields: ['email', 'id', 'displayName', 'photos']
+      profileFields: ['email', 'id', 'displayName']
     }
   }
   /*youtube: {

@@ -24,5 +24,12 @@ module.exports = {
 
   me: function (req, res) {
     res.ok(req.user);
+  },
+
+  data: function (req, res, next) {
+    var userJson = req.user.toJSON();
+    userJson["passsports"] = req.userItems;
+    res.json(userJson);
   }
+
 };

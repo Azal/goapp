@@ -25,7 +25,8 @@
             </li>
 
             <li *ngIf="userService.currentUser()">
-              <a [routerLink]="['User', 'UserDashboard']">{{userService.currentUser().email}}</a>
+              <img src="{{userService.currentUser().url}}" height="30" width="30" />
+              <a [routerLink]="['User', 'UserDashboard']" style="display: inline; line-height: 50px;">{{userService.currentUser().email}}</a>
             </li>
 
             <li *ngIf="userService.currentUser()">

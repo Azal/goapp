@@ -33,6 +33,7 @@ module.exports.routes = {
   ***************************************************************************/
 
   '/': 'index.html',
+  'get /user/data/:token': 'UserController.data',
   'post /register': 'UserController.create',
   'get /logout': 'AuthController.logout',
   'post /auth/local': 'AuthController.callback',
@@ -41,6 +42,7 @@ module.exports.routes = {
   'get /auth/:provider': 'AuthController.provider',
   'post /auth/:provider': 'AuthController.provider',
   'get /auth/:provider/callback': 'AuthController.callback',
+  'post /auth/:provider/callback': 'AuthController.callback',
   'get /auth/:provider/:action': 'AuthController.callback'
 
   /***************************************************************************

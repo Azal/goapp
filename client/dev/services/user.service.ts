@@ -6,6 +6,7 @@ import {LocalStorage} from "../helpers/localstorage";
 
 @Injectable()
 export class UserService extends CoreService {
+  public provider: string;
   public loggedIn = false;
   public userData: Object;
 
@@ -52,6 +53,7 @@ export class UserService extends CoreService {
   }
 
   registerWithProvider(provider: string, search: string) {
+    this.provider = provider;
     let route = this.resourceUrl("auth/" + provider + "/callback" + search);
     return this.http.get(route, { headers: this.jsonHeaders })
   }

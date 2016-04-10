@@ -62,7 +62,8 @@ module.exports.policies = {
   ],
 
   UserController: {
-    'create': true
+    'create': true,
+    'data': ['sessionAuth']
   },
 
   AuthController: {
