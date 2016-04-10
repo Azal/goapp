@@ -4,7 +4,20 @@
 .ng-invalid {
   border-left: 5px solid #a94442; /* red */
 }
+.social-share{
+  display: block;
+  margin-bottom: 5px;
+  cursor: pointer;
+}
 .social-share-link-facebook{
   color: #3b5999;
+  background: transparent;
+}
+.social-share-link-google-plus{
+  color: #dd4b39;
+  background: transparent;
+}
+.social-share-link-twitter {
+  color: #55acee;
   background: transparent;
 }
