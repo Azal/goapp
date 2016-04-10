@@ -3,9 +3,11 @@ import {Component, Input, OnDestroy} from "angular2/core";
 @Component({
   selector: 'loading',
   template: `
-    <div class="spinner" [hidden]="!isDelayedRunning">
-    <div class="double-bounce1"></div>
-    <div class="double-bounce2"></div>
+    <div class="spinner-container" [hidden]="!isDelayedRunning">
+      <div class="spinner">
+        <div class="double-bounce1"></div>
+        <div class="double-bounce2"></div>
+      </div>
     </div>
   `
 })

@@ -7,11 +7,9 @@ import {ROUTER_PROVIDERS, LocationStrategy, HashLocationStrategy} from "angular2
 import {UserService} from "./services/user.service";
 import {appInjector} from "./app.injector";
 import {ToastyService, ToastyConfig, Toasty, ToastOptions, ToastData} from 'ng2-toasty';
-import {LoadingComponent} from "./components/loading.component";
 import "rxjs/Rx";
 
 bootstrap(AppComponent, [
-  LoadingComponent,
   Toasty,
   ToastyService,
   ToastyConfig,

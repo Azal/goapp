@@ -27,18 +27,18 @@ import {User} from '../models/User';
 ])
 
 export class AppComponent {
-  public isRunning: boolean = true;
-
   constructor(private userService: UserService, private router: Router, private toastyService: ToastyService) {
     if (window.location.pathname.match(/\/auth\/\w+\/callback/)) {
-      this.isRunning = true;
+      this.userService.start();
+
       userService.providerCallback(window.location)
       .subscribe(
         (res) => this.handleProviderRegister(res),
         (err) => this.handleProviderRegister(err)
       );
+    } else {
+      this.userService.stop();
     }
-    this.isRunning = false;
   }
 
   public logout() {
@@ -47,11 +47,11 @@ export class AppComponent {
   }
 
   public handleProviderRegister(res: Response) {
-    this.isRunning = false;
     if (!this.userService.handleProviderLogin(res)) {
       this.toastyService.error({ title: "Unexpected error", msg: "Cannot login with " + this.userService.provider, timeout: 6000 });
     } else {
       this.toastyService.success({ title: "Welcome", msg: this.userService.currentUser().username, timeout: 6000 });
     }
+    this.userService.stop();
   }
 }

@@ -26,12 +26,14 @@ export class LoginComponent extends CallbackHttpComponent {
     super();
     this.active = true;
     this.checkMe = false;
+    this.userService.stop();
   }
 
   public onSubmit(): void {
     let email = this.email;
     let password = this.password;
     this.active = false;
+    this.userService.start();
     this.userService.loginWithCredentials(email, password)
     .subscribe(
       (data) => this.handleResponse(data),
@@ -41,16 +43,19 @@ export class LoginComponent extends CallbackHttpComponent {
 
   public onSucess(res: Response): void {
     this.active = true;
+    this.userService.stop();
     this.router.navigate(['User', 'UserDashboard']);
     this.toastyService.success({ title: "Welcome", msg: this.userService.currentUser().username, timeout: 6000 });
   }
 
   public onError(res: Response): void {
     this.active = true;
+    this.userService.stop();
     this.toastyService.error({ title: "Invalid combination of Email and Password", timeout: 6000 });
   }
 
   public authWithProvider(provider: string) {
+    this.userService.start();
     this.userService.loginWithProvider(provider);
   }
 }

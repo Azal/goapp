@@ -11,9 +11,11 @@ export class UserService extends CoreService {
   public search: string;
   public loggedIn = false;
   public userData: Object;
+  public loading: boolean;
 
   constructor(protected http: Http) {
     super(http);
+    this.loading = true;
     this.loggedIn = this.localStorage.getItem('auth_token') || this.localStorage.getItem('user');
   }
 
@@ -125,5 +127,19 @@ export class UserService extends CoreService {
 
   currentUser() {
     return this.localStorage.getItem('user');
+  }
+
+  active() {
+    return this.loading;
+  }
+
+  start() {
+    this.loading = true;
+    this.loading;
+  }
+
+  stop() {
+    this.loading = false;
+    this.loading;
   }
 }
