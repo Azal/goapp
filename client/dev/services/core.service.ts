@@ -2,7 +2,7 @@ import {Http, Headers} from "angular2/http";
 import {LocalStorage} from "../helpers/localstorage";
 
 export class CoreService {
-  public baseServer: string = "http://localhost:1337";
+  public baseServer: string = "http://goeditor.lvh.me:1337";
   protected localStorage: LocalStorage;
   protected jsonHeaders: Headers;
 

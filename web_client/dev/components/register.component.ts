@@ -65,7 +65,7 @@ export class RegisterComponent extends CallbackHttpComponent {
   }
 
   public onError(res: Response): void {
-    this.lastServerError = res._body;
+    this.lastServerError = res.json();
     this.showErrors = true;
     this.active = true;
   }

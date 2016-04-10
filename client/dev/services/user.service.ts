@@ -6,12 +6,18 @@ import {LocalStorage} from "../helpers/localstorage";
 
 @Injectable()
 export class UserService extends CoreService {
-  private loggedIn = false;
+  public loggedIn = false;
   public userData: Object;
 
   constructor(protected http: Http) {
     super(http);
     this.loggedIn = this.localStorage.getItem('auth_token') || this.localStorage.getItem('user');
+  }
+
+  saveUser(user: Object) {
+    this.localStorage.setItem('auth_token', user.token);
+    this.localStorage.setItem('user', user);
+    this.loggedIn = true;
   }
 
   login() {
@@ -28,12 +34,36 @@ export class UserService extends CoreService {
         let user = res.json();
 
         if (res.status === 200) {
-          this.localStorage.setItem('auth_token', user.token);
-          this.localStorage.setItem('user', user);
-          this.loggedIn = true;
+          this.saveUser(user);
         }
         return res;
       });
+  }
+
+  loginWithProvider(provider: string) {
+    let route = this.resourceUrl("auth/" + provider);
+    window.location.href = route;
+  }
+
+  providerCallback(location: Object) {
+    let search = location.search; //"?code=..."
+    let provider = location.pathname.match(/\/auth\/(.*)\/callback/)[1];
+    return this.registerWithProvider(provider, search);
+  }
+
+  registerWithProvider(provider: string, search: string) {
+    let route = this.resourceUrl("auth/" + provider + "/callback" + search);
+    return this.http.get(route, { headers: this.jsonHeaders })
+  }
+
+  handleProviderLogin(res: response) {
+    if (res.status !== 200 ){
+      alert("Unexpected login error");
+      return false;
+    } else {
+      this.saveUser(res.json());
+      return true;
+    }
   }
 
   register(email: string, password: string) {
@@ -47,9 +77,7 @@ export class UserService extends CoreService {
         let user = res.json();
 
         if (res.status === 200) {
-          this.localStorage.setItem('auth_token', user.token);
-          this.localStorage.setItem('user', user);
-          this.loggedIn = true;
+          this.saveUser(user);
         }
         return res;
       })

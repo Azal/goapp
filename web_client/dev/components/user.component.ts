@@ -9,7 +9,7 @@ import {UserService} from '../services/user.service';
 @Component({
   selector: 'user',
   templateUrl: 'dev/templates/user.html',
-  directives: [ROUTER_DIRECTIVES]
+  directives: [ROUTER_DIRECTIVES, UserDashboard]
 })
 
 @RouteConfig([
@@ -21,7 +21,5 @@ import {UserService} from '../services/user.service';
 })
 
 export class UserComponent {
-  constructor(private userService: UserService) {
 
-  }
 }

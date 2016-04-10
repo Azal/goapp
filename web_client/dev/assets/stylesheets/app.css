@@ -4,3 +4,7 @@
 .ng-invalid {
   border-left: 5px solid #a94442; /* red */
 }
+.social-share-link-facebook{
+  color: #3b5999;
+  background: transparent;
+}

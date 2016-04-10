@@ -50,4 +50,8 @@ export class LoginComponent extends CallbackHttpComponent {
     this.showErrors = true;
     this.active = true;
   }
+
+  public authWithProvider(provider: string) {
+    this.userService.loginWithProvider(provider);
+  }
 }

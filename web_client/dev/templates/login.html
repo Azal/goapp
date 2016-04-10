@@ -14,9 +14,9 @@
       <div class="form-group">
         <label for="exampleInputEmail1">Email address</label>
         <input type="email" class="form-control" id="user-email" placeholder="Email" required="required" autocomplete="off"
-          [(ngModel)]="email" ngControl=name #name="ngForm">
+          [(ngModel)]="email" ngControl=emailForm #emailForm="ngForm">
 
-        <div [hidden]="name.valid || name.pristine" class="text text-danger">
+        <div [hidden]="emailForm.valid || emailForm.pristine" class="text text-danger">
           Email is required
         </div>
       </div>
@@ -31,12 +31,12 @@
         </div>
       </div>
 
-      <div class="checkbox">
-        <label>
-          <input type="checkbox" [(ngModel)]="checkMe"> Check me out
-        </label>
-      </div>
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
+
+    <a (click)="authWithProvider('facebook');" class="social-share social-share-link-facebook">
+      Login with Facebook
+    </a>
+
   </div>
 </div>

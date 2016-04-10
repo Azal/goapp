@@ -48,17 +48,20 @@ module.exports.passport = {
       clientID: 'your-client-id',
       clientSecret: 'your-client-secret'
     }
-  },
+  },*/
   facebook: {
     name: 'Facebook',
     protocol: 'oauth2',
     strategy: require('passport-facebook').Strategy,
     options: {
-      clientID: 'your-client-id',
-      clientSecret: 'your-client-secret'
+      clientID: '1149496168429180',
+      clientSecret: 'c16c4dd5477385486e939ae53edd00ff',
+      callbackURL: "http://goeditor.lvh.me:3000/auth/facebook/callback",
+      scope: ['public_profile', 'email'],
+      profileFields: ['email', 'id', 'displayName', 'photos']
     }
   }
-  youtube: {
+  /*youtube: {
     name: 'Youtube',
     protocol: 'oauth2',
     strategy: require('passport-youtube').Strategy,
