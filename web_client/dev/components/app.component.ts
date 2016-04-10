@@ -11,7 +11,6 @@ import {LoadingComponent} from "./loading.component";
 import {ToastyService, ToastyConfig, Toasty, ToastOptions, ToastData} from 'ng2-toasty';
 
 import {UserService} from '../services/user.service';
-import {ToastyService} from "ng2-toasty";
 import {User} from '../models/User';
 
 @Component({
@@ -52,7 +51,7 @@ export class AppComponent {
     if (!this.userService.handleProviderLogin(res)) {
       this.toastyService.error({ title: "Unexpected error", msg: "Cannot login with " + this.userService.provider, timeout: 6000 });
     } else {
-      this.toastyService.success({ title: "Welcome", msg: this.userService.currentUser().email, timeout: 6000 });
+      this.toastyService.success({ title: "Welcome", msg: this.userService.currentUser().username, timeout: 6000 });
     }
   }
 }
