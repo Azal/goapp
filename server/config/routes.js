@@ -32,14 +32,18 @@ module.exports.routes = {
   *                                                                          *
   ***************************************************************************/
 
-  '/': {
-    controller: 'Users',
-    action: 'login'
-  },
-  'POST /login': 'UsersController.login',
-  'DESTROY /logout': 'UsersController.logout'//,
+  '/': 'index.html',
+  'get /user/data/:token': 'UserController.data',
+  'post /register': 'UserController.create',
+  'get /logout': 'AuthController.logout',
+  'post /auth/local': 'AuthController.callback',
+  'post /auth/local/:action': 'AuthController.callback',
 
-  //'GET /channels': 'ChannelsController.index'
+  'get /auth/:provider': 'AuthController.provider',
+  'post /auth/:provider': 'AuthController.provider',
+  'get /auth/:provider/callback': 'AuthController.callback',
+  'post /auth/:provider/callback': 'AuthController.callback',
+  'get /auth/:provider/:action': 'AuthController.callback'
 
   /***************************************************************************
   *                                                                          *

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    //"module": "none",
+    "target": "ES5",
+    "module": "system",
     "moduleResolution": "node",
     "sourceMap": true,
     "emitDecoratorMetadata": true,
@@ -10,8 +10,8 @@
     "noImplicitAny": false
   },
   "filesGlob": [
-    "./api/controllers/*.ts",
-    "./api/models/*.ts"
+    "./dev/**/*.ts",
+    "!./node_modules/**/*.ts"
   ],
   "exclude": [
     "node_modules",

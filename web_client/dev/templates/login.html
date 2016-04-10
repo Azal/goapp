@@ -1,0 +1,47 @@
+<div *ngIf="active" class="row">
+
+  <div class="col-xs-12 col-sm-4">
+    <h2>Login</h2>
+
+    <form class="form" (ngSubmit)="onSubmit()" #loginForm="ngForm" novalidate>
+      <input type="email" name="email" style="display: none;">
+      <div class="form-group">
+        <label for="exampleInputEmail1">Email address</label>
+        <input type="email" class="form-control" id="user-email" placeholder="Email" required="required" autocomplete="off"
+          [(ngModel)]="email" ngControl=emailForm #emailForm="ngForm">
+
+        <div [hidden]="emailForm.valid || emailForm.pristine" class="text text-danger">
+          Email is required
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="user-password">Password</label>
+        <input type="password" class="form-control" id="user-password" placeholder="Password" required="required"
+        [(ngModel)]="password" ngControl=pass #pass="ngForm">
+
+        <div [hidden]="pass.valid || pass.pristine" class="text text-danger">
+          Password is required
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+    <a (click)="authWithProvider('facebook');" class="social-share social-share-link-facebook">
+      <i class="fa fa-facebook-square"></i>
+      Login with Facebook
+    </a>
+
+    <a (click)="authWithProvider('google');" class="social-share social-share-link-google-plus">
+      <i class="fa fa-google-plus"></i>
+      Login with Google
+    </a>
+
+    <a (click)="authWithProvider('twitter');" class="social-share social-share-link-twitter">
+      <i class="fa fa-twitter"></i>
+      Login with Twitter
+    </a>
+
+  </div>
+</div>

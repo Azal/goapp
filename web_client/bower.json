@@ -1,0 +1,22 @@
+{
+  "name": "share-anywhere-front",
+  "description": "shar anywhere front with Angular2",
+  "main": "index.js",
+  "authors": [
+    "kiel"
+  ],
+  "license": "ISC",
+  "moduleType": [],
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.6",
+    "font-awesome": "^4.5.0"
+  }
+}
