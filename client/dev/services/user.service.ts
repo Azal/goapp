@@ -37,7 +37,7 @@ export class UserService extends CoreService {
   }
 
   register(email: string, password: string) {
-    let route = this.resourceUrl("user");
+    let route = this.resourceUrl("register");
     let username: string = email.split("@")[0];
     let data = JSON.stringify({ username: username, email: email, password: password });
 
@@ -55,10 +55,12 @@ export class UserService extends CoreService {
       })
   }
 
-  logout(): void {
+  logout() {
+    let route = this.resourceUrl("logout");
     this.localStorage.removeItem('auth_token');
     this.localStorage.removeItem('user');
     this.loggedIn = false;
+    this.http.get(route, "", { headers: this.jsonHeaders });
   }
 
   isLoggedIn(): boolean {
