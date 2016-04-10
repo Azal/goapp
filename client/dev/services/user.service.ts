@@ -1,16 +1,17 @@
-import {Observable} from "rxjs/Observable";
 import {Injectable} from "angular2/core";
-import {Http, Headers} from "angular2/http";
-import {LocalStorage} from "../helpers/localstorage";
+import {Http, Headers, Response} from "angular2/http";
 import {CoreService} from "./core.service";
+import {Observable} from "rxjs/Observable";
+import {LocalStorage} from "../helpers/localstorage";
 
 @Injectable()
 export class UserService extends CoreService {
   private loggedIn = false;
+  public userData: Object;
 
   constructor(protected http: Http) {
     super(http);
-    this.loggedIn = !!this.localStorage.getItem('auth_token');
+    this.loggedIn = this.localStorage.getItem('auth_token') || this.localStorage.getItem('user');
   }
 
   login() {
@@ -18,51 +19,47 @@ export class UserService extends CoreService {
   }
 
   loginWithCredentials(email: string, password: string) {
-    let headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    let route = this.resourceUrl("login");
+    let route = this.resourceUrl("auth/local");
+    let data = JSON.stringify({ identifier: email, password: password });
 
     return this.http
-      .post(
-        route,
-        JSON.stringify({ email, password }),
-        { headers }
-      )
-      .map(res => res.json())
-      .map((res) => {
-        if (res.success) {
-          this.localStorage.setItem('auth_token', res.auth_token);
+      .post(route, data, { headers: this.jsonHeaders })
+      .map((res: any) => {
+        let user = res.json();
+
+        if (res.status === 200) {
+          this.localStorage.setItem('auth_token', user.token);
+          this.localStorage.setItem('user', user);
           this.loggedIn = true;
         }
-
-        return res.success;
+        return res;
       });
   }
 
   register(email: string, password: string) {
-    let headers = new Headers();
-    headers.append('Content-Type', 'application/json');
     let route = this.resourceUrl("user");
+    let username: string = email.split("@")[0];
+    let data = JSON.stringify({ username: username, email: email, password: password });
+
+    debugger
 
     return this.http
-      .post(
-        route,
-        JSON.stringify({ email, password }),
-        { headers }
-      )
-      .map(res => res.json())
-      .map((res) => {
-        if (res.success) {
-          this.localStorage.setItem('auth_token', res.auth_token);
+      .post(route, data, { headers: this.jsonHeaders })
+      .map((res: any) => {
+        let user = res.json();
+
+        if (res.status === 200) {
+          this.localStorage.setItem('auth_token', user.token);
+          this.localStorage.setItem('user', user);
           this.loggedIn = true;
         }
-
-        return res.success;
-      });
+        return res;
+      })
   }
 
   logout(): void {
     this.localStorage.removeItem('auth_token');
+    this.localStorage.removeItem('user');
     this.loggedIn = false;
   }
 
@@ -72,5 +69,9 @@ export class UserService extends CoreService {
 
   check() {
     return Observable.of(this.loggedIn);
+  }
+
+  currentUser() {
+    return this.localStorage.getItem('user');
   }
 }

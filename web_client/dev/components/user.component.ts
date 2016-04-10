@@ -4,6 +4,7 @@ import {isLoggedIn} from '../isloggedin';
 
 import {User} from '../models/User';
 import {UserDashboard} from './user/user.dashboard.component';
+import {UserService} from '../services/user.service';
 
 @Component({
   selector: 'user',
@@ -12,7 +13,7 @@ import {UserDashboard} from './user/user.dashboard.component';
 })
 
 @RouteConfig([
-  {path: '/', component: UserDashboard, name: 'UserDashboard'}
+  { path: '/', component: UserDashboard, name: 'UserDashboard' }
 ])
 
 @CanActivate((next: ComponentInstruction, previous: ComponentInstruction) => {
@@ -20,5 +21,7 @@ import {UserDashboard} from './user/user.dashboard.component';
 })
 
 export class UserComponent {
-  currentUser: User = new User();
+  constructor(private userService: UserService) {
+
+  }
 }

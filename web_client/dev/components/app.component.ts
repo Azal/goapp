@@ -1,5 +1,6 @@
 import {Component} from 'angular2/core';
-import {RouteConfig, RouterLink, RouterOutlet, ROUTER_DIRECTIVES} from 'angular2/router';
+import {RouteConfig, Router, RouterLink, RouterOutlet, ROUTER_DIRECTIVES} from 'angular2/router';
+import {LocalStorage} from "../helpers/localstorage";
 
 import {HomeComponent} from './home.component';
 import {LoginComponent} from './login.component';
@@ -7,6 +8,7 @@ import {UserComponent} from './user.component';
 import {RegisterComponent} from './register.component';
 import {LoadingComponent} from "./loading.component";
 
+import {UserService} from '../services/user.service';
 import {User} from '../models/User';
 
 @Component({
@@ -23,5 +25,15 @@ import {User} from '../models/User';
 ])
 
 export class AppComponent {
+  currentUser: Object;
 
+  constructor(private userService: UserService, private router: Router) {
+    this.currentUser = this.userService.currentUser();
+  }
+
+  public logout() {
+    this.userService.logout();
+    this.currentUser = null;
+    this.router.navigate(['Home']);
+  }
 }

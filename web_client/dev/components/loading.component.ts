@@ -21,7 +21,8 @@ export class LoadingComponent implements OnDestroy {
   public set isRunning(value: boolean) {
     if (!value) {
       this.cancelTimeout();
-      return this.isDelayedRunning = false;
+      this.isDelayedRunning = false;
+      return;
     }
 
     if (this.currentTimeout) {
@@ -32,6 +33,8 @@ export class LoadingComponent implements OnDestroy {
       this.isDelayedRunning = value;
       this.cancelTimeout();
     }, this.delay);
+
+    return;
   }
 
   private cancelTimeout(): void {

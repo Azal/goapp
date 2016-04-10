@@ -16,12 +16,20 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
           <ul class="nav navbar-nav navbar-right">
-            <li>
+            <li *ngIf="!currentUser">
               <a [routerLink]="['Login']">Login</a>
             </li>
 
-            <li>
+            <li *ngIf="!currentUser">
               <a [routerLink]="['Register']">Register</a>
+            </li>
+
+            <li *ngIf="currentUser">
+              <a [routerLink]="['User', 'UserDashboard']">{{currentUser.email}}</a>
+            </li>
+
+            <li *ngIf="currentUser">
+              <a (click)="logout();">Logout</a>
             </li>
           </ul>
 

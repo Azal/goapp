@@ -23,7 +23,7 @@ export class LocalStorage {
     }
 
     public getItem(key:string):any {
-        return JSON.parse(this.localStorage[key] || '{}');
+        return JSON.parse(this.localStorage[key] || null);
     }
 
     public removeItem(key:string):any {
