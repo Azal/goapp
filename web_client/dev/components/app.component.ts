@@ -25,15 +25,12 @@ import {User} from '../models/User';
 ])
 
 export class AppComponent {
-  currentUser: Object;
 
   constructor(private userService: UserService, private router: Router) {
-    this.currentUser = this.userService.currentUser();
   }
 
   public logout() {
     this.userService.logout();
-    this.currentUser = null;
     this.router.navigate(['Home']);
   }
 }

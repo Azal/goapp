@@ -7,9 +7,6 @@ import {UserService} from '../../services/user.service';
 })
 
 export class UserDashboard {
-  currentUser: Object;
-
   constructor(private userService: UserService) {
-    this.currentUser = this.userService.currentUser();
   }
 }
