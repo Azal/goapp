@@ -1,11 +1,19 @@
+<loading [isRunning]="!active"></loading>
+
 <div class="row">
   <div class="col-xs-12 col-sm-4">
+    <h2>Register</h2>
+
+    <div *ngIf="showErrors" class="alert alert-danger">
+      {{lastServerError}}
+    </div>
+
     <form class="form" *ngIf="active" (ngSubmit)="onSubmit()" #loginForm="ngForm" novalidate>
       <input type="email" name="email" style="display: none;">
       <div class="form-group">
         <label for="exampleInputEmail1">Email address</label>
         <input type="email" class="form-control" id="user-email" placeholder="Email" required="required" autocomplete="off"
-          [(ngModel)]="user.name" ngControl=name #name="ngForm">
+          [(ngModel)]="email" ngControl=name #name="ngForm">
 
         <div [hidden]="name.valid || name.pristine" class="alert alert-danger">
           Email is required
@@ -15,23 +23,31 @@
       <div class="form-group">
         <label for="user-password">Password</label>
         <input type="password" class="form-control" id="user-password" placeholder="Password" required="required"
-        [(ngModel)]="user.password" ngControl=pass #pass="ngForm">
+        [(ngModel)]="password" ngControl=pass #pass="ngForm">
 
-        <div [hidden]="pass.valid || pass.pristine" class="alert alert-danger">
+        <div [hidden]="pass.valid || pass.pristine" class="text text-danger">
           Password is required
+        </div>
+
+        <div [hidden]="!noPasswordMatch" class="text text-danger">
+          Passwords must be equal
         </div>
       </div>
 
       <div class="form-group">
         <label for="password-confirmation">Confirm Password</label>
         <input type="password" class="form-control" id="password-confirmation" placeholder="Confirm Password"
-        [(ngModel)]="user.confirm_password" ngControl=confirmation #confirmation="ngForm">
-        <div [hidden]="confirmation.valid || confirmation.pristine" class="alert alert-danger">
+        [(ngModel)]="password_confirmation" ngControl=confirmation #confirmation="ngForm">
+        <div [hidden]="confirmation.valid || confirmation.pristine" class="text text-danger">
           Password confirmation is required
+        </div>
+
+        <div [hidden]="!noPasswordMatch" class="text text-danger">
+          Passwords must be equal
         </div>
       </div>
 
-      <button type="submit" class="btn btn-primary" [(onclick)]="onSubmit">Submit</button>
+      <button type="submit" class="btn btn-primary">Submit</button>
     </form>
   </div>
 </div>

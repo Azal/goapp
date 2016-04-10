@@ -41,8 +41,6 @@ export class UserService extends CoreService {
     let username: string = email.split("@")[0];
     let data = JSON.stringify({ username: username, email: email, password: password });
 
-    debugger
-
     return this.http
       .post(route, data, { headers: this.jsonHeaders })
       .map((res: any) => {
