@@ -61,6 +61,10 @@ module.exports.policies = {
     'CriteriaPolicy'
   ],
 
+  UserController: {
+    'create': true
+  },
+
   AuthController: {
     '*': [ 'passport' ]
   }

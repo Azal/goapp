@@ -1,5 +1,5 @@
 import {Injectable} from "angular2/core";
-import {Http, Headers, Response} from "angular2/http";
+import {Http, Headers, Response, URLSearchParams} from "angular2/http";
 import {CoreService} from "./core.service";
 import {Observable} from "rxjs/Observable";
 import {LocalStorage} from "../helpers/localstorage";
@@ -55,12 +55,27 @@ export class UserService extends CoreService {
       })
   }
 
-  logout() {
+  logout(): void {
     let route = this.resourceUrl("logout");
-    this.localStorage.removeItem('auth_token');
-    this.localStorage.removeItem('user');
-    this.loggedIn = false;
-    this.http.get(route, "", { headers: this.jsonHeaders });
+    let user = this.localStorage.getItem("user");
+    let params: URLSearchParams = new URLSearchParams();
+    params.set('identifier', user.email);
+    params.set('email', user.email);
+
+    this.http.get(route, { headers: this.jsonHeaders })
+      .subscribe(
+        (res) => this.handleLogout(res),
+        (err) => this.handleLogout(err)
+      );
+    return;
+  }
+
+  private handleLogout(res: Response) {
+    if (res.status === 200 || res.status === 302) {
+      this.localStorage.removeItem('auth_token');
+      this.localStorage.removeItem('user');
+      this.loggedIn = false;
+    }
   }
 
   isLoggedIn(): boolean {

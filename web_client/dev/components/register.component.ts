@@ -57,9 +57,11 @@ export class RegisterComponent extends CallbackHttpComponent {
   }
 
   public onSucess(res: Response): void {
-    this.showErrors = false;
-    this.active = true;
-    this.router.navigate(['User', 'UserDashboard']);
+    if (this.userService.loggedIn) {
+      this.showErrors = false;
+      this.active = true;
+      this.router.navigate(['User', 'UserDashboard']);
+    }
   }
 
   public onError(res: Response): void {
