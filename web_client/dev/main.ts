@@ -6,9 +6,15 @@ import {provide, ComponentRef} from "angular2/core";
 import {ROUTER_PROVIDERS, LocationStrategy, HashLocationStrategy} from "angular2/router";
 import {UserService} from "./services/user.service";
 import {appInjector} from "./app.injector";
+import {ToastyService, ToastyConfig, Toasty, ToastOptions, ToastData} from 'ng2-toasty';
+import {LoadingComponent} from "./components/loading.component";
 import "rxjs/Rx";
 
 bootstrap(AppComponent, [
+  LoadingComponent,
+  Toasty,
+  ToastyService,
+  ToastyConfig,
   UserService,
   HTTP_PROVIDERS,
   ROUTER_PROVIDERS,

@@ -7,8 +7,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "removeComments": false,
-    "noImplicitAny": false,
-    "outDir": "./app"
+    "noImplicitAny": false
   },
   "filesGlob": [
     "./dev/**/*.ts",
@@ -18,47 +17,5 @@
     "node_modules",
     "typings/main",
     "typings/main.d.ts"
-  ],
-  "atom": {
-    "rewriteTsconfig": true
-  },
-  "files": [
-    "./dev/components/app.component.ts",
-    "./dev/components/login.component.ts",
-    "./dev/components/register.component.ts",
-    "./dev/components/user.component.ts",
-    "./dev/interfaces/GenericNode.ts",
-    "./dev/interfaces/GenericTree.ts",
-    "./dev/interfaces/Keyable.ts",
-    "./dev/interfaces/Printable.ts",
-    "./dev/interfaces/ServicesInterface.ts",
-    "./dev/main.ts",
-    "./dev/models/Board.ts",
-    "./dev/models/Cell.ts",
-    "./dev/models/GameRules.ts",
-    "./dev/models/GlobalKey.ts",
-    "./dev/models/Guid.ts",
-    "./dev/models/MarkerFactory.ts",
-    "./dev/models/markers/Blackstone.ts",
-    "./dev/models/markers/LetterMarker.ts",
-    "./dev/models/markers/Marker.ts",
-    "./dev/models/markers/PassMarker.ts",
-    "./dev/models/markers/Stone.ts",
-    "./dev/models/markers/SymbolMarker.ts",
-    "./dev/models/markers/Whitestone.ts",
-    "./dev/models/move_types/MarkMoveType.ts",
-    "./dev/models/move_types/MoveType.ts",
-    "./dev/models/move_types/PassMoveType.ts",
-    "./dev/models/move_types/StoneMoveType.ts",
-    "./dev/models/MoveTypeFactory.ts",
-    "./dev/models/RulesType.ts",
-    "./dev/models/sequencer/SequencerGroupElement.ts",
-    "./dev/models/sequencer/SequencerGroupNode.ts",
-    "./dev/models/sequencer/SequencerNode.ts",
-    "./dev/models/sequencer/SequencerTree.ts",
-    "./dev/models/sequencer/SequencerTreeData.ts",
-    "./dev/models/StoneMaker.ts",
-    "./dev/models/User.ts",
-    "./dev/services/user.service.ts"
   ]
 }

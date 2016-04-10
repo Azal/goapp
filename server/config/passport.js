@@ -20,27 +20,28 @@ module.exports.passport = {
     protocol: 'basic'
   },
 
-  /*
   google: {
     name: 'Google',
     protocol: 'oauth2',
     strategy: require('passport-google-oauth').OAuth2Strategy,
     options: {
-      clientID: 'your-client-id',
-      clientSecret: 'your-client-secret',
+      callbackURL: "http://goeditor.lvh.me:3000/auth/google/callback",
+      clientID: '1095800440517-t0vrjdbjfguk7f8lcd0tgeol8e9umoon.apps.googleusercontent.com',
+      clientSecret: 'ACGei-CGxcSDdpbrwj4QnelI',
       scope: ['profile', 'email']
     }
-  }
+  },
   twitter: {
     name: 'Twitter',
     protocol: 'oauth',
     strategy: require('passport-twitter').Strategy,
     options: {
-      consumerKey: 'your-consumer-key',
-      consumerSecret: 'your-consumer-secret'
+      callbackURL: "http://127.0.0.1:3000/auth/twitter/callback",
+      consumerKey: 'vyUaiLLcjRsPKwcZHw5BehjMZ',
+      consumerSecret: 'peB1X8AxRFJfSFJWKHZvVxRIumkGdeZt2Mo6ejH2EIPnA72eAb'
     }
   },
-  github: {
+  /*github: {
     name: 'GitHub',
     protocol: 'oauth2',
     strategy: require('passport-github').Strategy,

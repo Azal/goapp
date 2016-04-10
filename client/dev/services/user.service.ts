@@ -6,7 +6,9 @@ import {LocalStorage} from "../helpers/localstorage";
 
 @Injectable()
 export class UserService extends CoreService {
+  public token: string;
   public provider: string;
+  public search: string;
   public loggedIn = false;
   public userData: Object;
 
@@ -16,7 +18,7 @@ export class UserService extends CoreService {
   }
 
   saveUser(user: Object) {
-    this.localStorage.setItem('auth_token', user.token);
+    //this.localStorage.setItem('auth_token', user.token);
     this.localStorage.setItem('user', user);
     this.loggedIn = true;
   }
@@ -46,21 +48,26 @@ export class UserService extends CoreService {
     window.location.href = route;
   }
 
-  providerCallback(location: Object) {
-    let search = location.search; //"?code=..."
-    let provider = location.pathname.match(/\/auth\/(.*)\/callback/)[1];
-    return this.registerWithProvider(provider, search);
+  providerCallback(location: any) {
+    this.search = location.search; //"?code=..."
+    this.provider = location.pathname.match(/\/auth\/(.*)\/callback/)[1];
+    return this.registerWithProvider(this.provider, this.search);
   }
 
   registerWithProvider(provider: string, search: string) {
-    this.provider = provider;
-    let route = this.resourceUrl("auth/" + provider + "/callback" + search);
+    let route = ""
+    if (provider === "twitter") {
+      let token = search.split("&")[0].split("?oauth_token=")[1];
+      this.search = search + "&token=" + token;
+      route = "http://127.0.0.1:1337/auth/" + provider + "/callback" + this.search;
+    } else {
+      route = this.resourceUrl("auth/" + provider + "/callback" + this.search);
+    }
     return this.http.get(route, { headers: this.jsonHeaders })
   }
 
-  handleProviderLogin(res: response) {
+  handleProviderLogin(res: Response) {
     if (res.status !== 200 ){
-      alert("Unexpected login error");
       return false;
     } else {
       this.saveUser(res.json());

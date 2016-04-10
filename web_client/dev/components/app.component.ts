@@ -1,19 +1,22 @@
 import {Component} from 'angular2/core';
 import {RouteConfig, Router, RouterLink, RouterOutlet, ROUTER_DIRECTIVES} from 'angular2/router';
 import {LocalStorage} from "../helpers/localstorage";
+import {Response} from "angular2/http";
 
 import {HomeComponent} from './home.component';
 import {LoginComponent} from './login.component';
 import {UserComponent} from './user.component';
 import {RegisterComponent} from './register.component';
 import {LoadingComponent} from "./loading.component";
+import {ToastyService, ToastyConfig, Toasty, ToastOptions, ToastData} from 'ng2-toasty';
 
 import {UserService} from '../services/user.service';
+import {ToastyService} from "ng2-toasty";
 import {User} from '../models/User';
 
 @Component({
   selector: 'go-web-app',
-  directives: [RouterLink, RouterOutlet, ROUTER_DIRECTIVES, LoadingComponent],
+  directives: [RouterLink, RouterOutlet, ROUTER_DIRECTIVES, LoadingComponent, Toasty],
   templateUrl: 'dev/templates/app.html'
 })
 
@@ -25,9 +28,9 @@ import {User} from '../models/User';
 ])
 
 export class AppComponent {
-  isRunning: true;
+  public isRunning: boolean = true;
 
-  constructor(private userService: UserService, private router: Router) {
+  constructor(private userService: UserService, private router: Router, private toastyService: ToastyService) {
     if (window.location.pathname.match(/\/auth\/\w+\/callback/)) {
       this.isRunning = true;
       userService.providerCallback(window.location)
@@ -46,6 +49,10 @@ export class AppComponent {
 
   public handleProviderRegister(res: Response) {
     this.isRunning = false;
-    this.userService.handleProviderLogin(res);
+    if (!this.userService.handleProviderLogin(res)) {
+      this.toastyService.error({ title: "Unexpected error", msg: "Cannot login with " + this.userService.provider, timeout: 6000 });
+    } else {
+      this.toastyService.success({ title: "Welcome", msg: this.userService.currentUser().email, timeout: 6000 });
+    }
   }
 }

@@ -9,6 +9,9 @@
   margin-bottom: 5px;
   cursor: pointer;
 }
+.social-share{
+  font-size: 16px;
+}
 .social-share-link-facebook{
   color: #3b5999;
   background: transparent;
