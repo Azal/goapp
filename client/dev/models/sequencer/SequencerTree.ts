@@ -20,7 +20,7 @@ export class SequencerTree implements GenericTree<SequencerNode>, Printable {
     this.reset();
   }
 
-  private reset(): void {
+  public reset(): void {
     this._head = new SequencerNode();
     this.replaceCurrentNode(this._head);
     this._turn = 0;
@@ -214,7 +214,7 @@ export class SequencerTree implements GenericTree<SequencerNode>, Printable {
     }
 
     let node: SequencerNode = this._currentNode;
-    let sequenceList: string[] = [];
+    let sequenceList: SequencerNode[] = [];
 
     while (node && node.data) {
       sequenceList.push(node);
