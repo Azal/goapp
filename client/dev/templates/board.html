@@ -73,7 +73,19 @@
       <h3>Game Info</h3>
 
       <p>Nodes count: <span class="info">{{ board.getBoardTree().getNodeCount() }}</span></p>
-      <p>Tree represetation:</p>
+
+      <div class="btn-group">
+        <button class="btn btn-sm btn-info" (click)="board.getBoardTree().moveLeft();">Left</button>
+        <button class="btn btn-sm btn-info" (click)="board.getBoardTree().moveRight();">Right</button>
+        <br><br>
+        <button class="btn btn-sm btn-info" (click)="board.getBoardTree().moveUp();">Up</button>
+        <button class="btn btn-sm btn-info" (click)="board.getBoardTree().moveDown();">Down</button>
+      </div>
+
+      <p><strong>Current sequence:</strong></p>
+      <div class="sequence">{{board.getBoardTree().getCurrentSequenceString()}}</div>
+
+      <p><strong>Tree represetation:</strong></p>
       <div id="tree_representation" [innerHTML]="board.getBoardTree().toString()"></div>
     </div>
     <div class="clearfix"></div>

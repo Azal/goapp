@@ -11,6 +11,8 @@ export class SequencerTree implements GenericTree<SequencerNode>, Printable {
   _head: SequencerNode;
   _currentNode: SequencerNode;
   _accessor: Object;
+  _lastSequence: SequencerNode[];
+
   private _turn: number;
   private _count: number;
 
@@ -20,10 +22,11 @@ export class SequencerTree implements GenericTree<SequencerNode>, Printable {
 
   private reset(): void {
     this._head = new SequencerNode();
-    this._currentNode = this._head;
+    this.replaceCurrentNode(this._head);
     this._turn = 0;
     this._accessor = {};
     this._count = 0;
+    this._lastSequence = [];
   }
 
   public getNodeCount(): number {
@@ -42,7 +45,7 @@ export class SequencerTree implements GenericTree<SequencerNode>, Printable {
   public seekChild(key: string): SequencerNode {
     let node: SequencerNode = this.searchChild(key);
     if (node) {
-      this._currentNode = node;
+      this.replaceCurrentNode(node);
       this._turn = node.deep + 1;
       return node;
     }
@@ -81,7 +84,7 @@ export class SequencerTree implements GenericTree<SequencerNode>, Printable {
         node.parent.removeChild(node);
 
         if (node.getKey() === this._currentNode.getKey()) {
-          this._currentNode = node.parent;
+          this.replaceCurrentNode(node.parent);
         }
 
         let nodeIterator: SequencerNode = this._currentNode;
@@ -98,7 +101,7 @@ export class SequencerTree implements GenericTree<SequencerNode>, Printable {
         }
 
         if (nodeOnRoad && nodeIterator) {
-          this._currentNode = nodeIterator;
+          this.replaceCurrentNode(nodeIterator);
         }
 
        } else {
@@ -146,7 +149,7 @@ export class SequencerTree implements GenericTree<SequencerNode>, Printable {
     let addedNode = this.addChildFromCurrent(node);
 
     if (addedNode) {
-      this._currentNode = addedNode;
+      this.replaceCurrentNode(addedNode);
       this._turn = addedNode.deep + 1;
       this._accessor[addedNode.getKey()] = addedNode;
     } else {
@@ -170,7 +173,7 @@ export class SequencerTree implements GenericTree<SequencerNode>, Printable {
       let addedNode: SequencerNode = this.addChildFromCurrent(node);
 
       if (addedNode) {
-        this._currentNode = addedNode;
+        this.replaceCurrentNode(addedNode);
         this._accessor[addedNode.getKey()] = addedNode;
       } else {
         console.log("Node not added");
@@ -194,6 +197,65 @@ export class SequencerTree implements GenericTree<SequencerNode>, Printable {
       return null;
     }
     return this.addSequenceGroupElement(moveType, x, y, markType);
+  }
+
+  public getCurrentSequenceString(): string {
+    let sequenceNodes = [];
+    let sequence = this.getCurrentSequence()
+    for (let node of sequence) {
+      sequenceNodes.push(node.data.toString())
+    }
+    return sequenceNodes.join(" => ");
+  }
+
+  public getCurrentSequence(): SequencerNode[] {
+    for (let node of this._lastSequence) {
+      node.removeSequenceMark();
+    }
+
+    let node: SequencerNode = this._currentNode;
+    let sequenceList: string[] = [];
+
+    while (node && node.data) {
+      sequenceList.push(node);
+      node.addSequenceMark();
+      node = node.parent;
+    }
+
+    this._lastSequence = sequenceList.reverse();
+    return this._lastSequence;
+  }
+
+  public moveLeft() {
+    if (this._currentNode && this._currentNode.previous) {
+      this.replaceCurrentNode(this._currentNode.previous);
+    }
+  }
+
+  public moveRight() {
+    if (this._currentNode && this._currentNode.next) {
+      this.replaceCurrentNode(this._currentNode.next);
+    }
+  }
+
+  public moveUp() {
+    if (this._currentNode && this._currentNode.parent) {
+      this.replaceCurrentNode(this._currentNode.parent);
+    }
+  }
+
+  public moveDown() {
+    if (this._currentNode && this._currentNode.mainChild) {
+      this.replaceCurrentNode(this._currentNode.mainChild);
+    }
+  }
+
+  private replaceCurrentNode(newNode: SequencerNode) {
+    if (this._currentNode) {
+      this._currentNode._isCurrent = false;
+    }
+    this._currentNode = newNode;
+    this._currentNode._isCurrent = true;
   }
 
   /* END Game Methods */
