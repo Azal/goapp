@@ -10,16 +10,16 @@ export class SequencerTreeData implements Keyable, Printable {
   private _markType: string;
   private _x: number;
   private _y: number;
-  private _mark: Marker;
-  private _move: MoveType;
+  //private _mark: Marker;
+  //private _move: MoveType;
 
   constructor(moveType: string, markType: string, x: number, y: number) {
     this._moveType = moveType;
     this._markType = markType;
     this._x = x;
     this._y = y;
-    this._move = MoveTypeFactory.makeNew(moveType);
-    this._mark = MarkerFactory.makeNew(markType);
+    //this._move = MoveTypeFactory.makeNew(moveType);
+    //this._mark = MarkerFactory.makeNew(markType);
   }
 
   public get moveType(): string {
@@ -27,7 +27,7 @@ export class SequencerTreeData implements Keyable, Printable {
   }
   public set moveType(v: string) {
     this._moveType = v;
-    this._move = MoveTypeFactory.makeNew(v);
+    //this._move = MoveTypeFactory.makeNew(v);
   }
 
   public get markType(): string {
@@ -35,7 +35,7 @@ export class SequencerTreeData implements Keyable, Printable {
   }
   public set markType(v: string) {
     this._markType = v;
-    this._mark = MarkerFactory.makeNew(v);
+    //this._mark = MarkerFactory.makeNew(v);
   }
 
   public get x(): number {
@@ -69,10 +69,11 @@ export class SequencerTreeData implements Keyable, Printable {
   }
 
   public toString(): string {
-    return "x:" + this._x + "|y:" + this._y + "|mark:" + this._mark.toString() + "|move:" + this._move.toString();
+    return "x:" + this._x + "|y:" + this._y + "|mark:" + this._markType + "|move:" + this._moveType;
   }
 
   public valid(): boolean {
-    return this._move.isAPass() && this._mark.isAPass() || this._move.isAStone() && this._mark.isAStone() || this._move.isAMarker() && this._mark.isNotEmpty();
+    //return this._move.isAPass() && this._mark.isAPass() || this._move.isAStone() && this._mark.isAStone() || this._move.isAMarker() && this._mark.isNotEmpty();
+    return true;
   }
 }

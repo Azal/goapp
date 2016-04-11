@@ -87,6 +87,10 @@ export class Board {
   }
 
   /* Getters and Setters */
+  public get tree() : SequencerTree {
+    return this._sequencer_tree;
+  }
+
   public getName(): string {
     return this._name;
   }
@@ -426,6 +430,7 @@ export class Board {
     this._skip_ko_clean_up = false;
     this._black_captured_on_board = 0;
     this._white_captured_on_board = 0;
+    this._sequencer_tree.reset();
   }
 
   /** Remove all marked stones */

@@ -9,14 +9,24 @@ export class SequencerNode implements GenericNode<SequencerTreeData, SequencerNo
   _data: SequencerTreeData;
   _parent: SequencerNode;
   _nodes: Object = {};
+
+  public _inSequence: boolean;
+  public _mainBranch: boolean;
+  public _isCurrent: boolean;
   private _deep: number;
   protected _key: Guid;
-  private _mainBranch: boolean;
+  private _lastChild: SequencerNode;
+
+  public mainChild: SequencerNode;
+  public next: SequencerNode;
+  public previous: SequencerNode;
 
   constructor(data?: SequencerTreeData) {
     if (data) {
       this._data = data;
     }
+    this._isCurrent = false;
+    this._inSequence = false;
     this._mainBranch = false;
     this._deep = 0;
     this._key = Guid.MakeNew();
@@ -89,19 +99,22 @@ export class SequencerNode implements GenericNode<SequencerTreeData, SequencerNo
       child.parent = this;
       child.deep = this.deep + 1;
 
-      if (child.parent && !child.parent._mainBranch) {
-        child._mainBranch = false;
-      } else {
-        let brotherCount: number = 0;
-        for (let key in this._nodes) {
-          let node = this._nodes[key];
-          brotherCount = brotherCount + 1;
-        };
+      let brotherCount: number = 0;
+      for (let key in this._nodes) {
+        let node = this._nodes[key];
+        brotherCount = brotherCount + 1;
+      };
 
-        if (brotherCount ===  1) {
-          child._mainBranch = true;
-        }
+      // First child added to parent
+      if (brotherCount === 1 ) {
+        child.parent.mainChild = child;
+        child._mainBranch = true;
+
+      } else if (this._lastChild) {
+        child.previous = this._lastChild;
+        this._lastChild.next = child;
       }
+      this._lastChild = child;
 
       return child;
     }
@@ -110,11 +123,28 @@ export class SequencerNode implements GenericNode<SequencerTreeData, SequencerNo
   public removeChild(child: SequencerNode): boolean {
     let childNodeKey = child.getNodeKey();
     if (this._nodes[childNodeKey]) {
+
+      this._nodes[childNodeKey].connectBrothers();
+      this._nodes[childNodeKey].connectMainChild();
+
       this._nodes[childNodeKey] = null;
       delete(this._nodes[childNodeKey]);
       return true;
     } else {
       return false;
+    }
+  }
+
+  public connectBrothers() {
+    if (this.next && this.previous) {
+      this.next.previous = this.previous;
+      this.previous.next = this.next;
+    }
+  }
+
+  public connectMainChild() {
+    if (this.next && this.parent) {
+      this.parent.mainChild = this.next;
     }
   }
 
@@ -156,14 +186,20 @@ export class SequencerNode implements GenericNode<SequencerTreeData, SequencerNo
 
   public toString(): string {
     if (this._data) {
-      let strNode = "[key: " + this._key + "][main: " + this._mainBranch + "][deep:" + this._deep + "][data: " + this._data.toString() + "] <br/>";
-
+      if (this._inSequence) {
+        let strNode = "[key: <b>" + this._key + "</b>][main: " + this._mainBranch + "][deep:" + this._deep + "][data: <b>" + this._data.toString() + "</b>]";
+      } else {
+        let strNode = "[key: " + this._key + "][main: " + this._mainBranch + "][deep:" + this._deep + "][data: " + this._data.toString() + "]";
+      }
+      if (this._isCurrent) {
+        strNode = "<div class='current-node'>" + strNode + "</div>";
+      }
+      let childString = [];
       for (let key in this._nodes) {
         let node = this._nodes[key];
-        let str = node.getKey();
-        strNode = strNode + "( " + node.toString() + " )";
-      };
-      return strNode;
+        childString.push(node.toString());
+      }
+      return strNode + "(" + childString.join(", ") + ")";
     } else {
       return "";
     }
@@ -171,6 +207,14 @@ export class SequencerNode implements GenericNode<SequencerTreeData, SequencerNo
 
   print(): void {
     console.log(this.toString());
+  }
+
+  public removeSequenceMark() {
+    this._inSequence = false;
+  }
+
+  public addSequenceMark() {
+    this._inSequence = true;
   }
 
 }
