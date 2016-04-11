@@ -77,8 +77,8 @@ module.exports.connections = {
   developmentPostgresDB: {
     adapter: 'sails-postgresql',
     host: 'localhost',
-    user: 'postgres',
-    password: '12345678',
+    user: process.env.SQL_USER,
+    password: process.env.SQL_PASSWORD,
     database: 'go_app_development'
   }
 

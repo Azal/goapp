@@ -13,7 +13,7 @@ import {Component, Input, OnDestroy} from "angular2/core";
 })
 
 export class LoadingComponent implements OnDestroy {
-  private currentTimeout: number;
+  private currentTimeout;
   private isDelayedRunning: boolean = false;
 
   @Input()
