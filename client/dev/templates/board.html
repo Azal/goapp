@@ -36,6 +36,9 @@
 
       <button class="btn-blue" (click)="playExampleSequence()">Play Example Sequence</button>
       <!--<button class="btn-blue" (click)="toggleBoardRepresentation()">Show Board Matrix</button>-->
+      <div>
+        <input type="file" (change)="onChange($event)"/>
+      </div>
       <div class="clearfix"></div>
 
       <div *ngIf="board.isGameEnded()">
@@ -72,21 +75,24 @@
     <div class="two_columns">
       <h3>Game Info</h3>
 
-      <p>Nodes count: <span class="info">{{ board.getBoardTree().getNodeCount() }}</span></p>
+      <p>Nodes count: <span class="info">{{ board.sequencerTree.getNodeCount() }}</span></p>
 
       <div class="btn-group">
-        <button class="btn btn-sm btn-info" (click)="board.getBoardTree().moveLeft();">Left</button>
-        <button class="btn btn-sm btn-info" (click)="board.getBoardTree().moveRight();">Right</button>
+        <button class="btn btn-sm btn-info" (click)="goToPreviousMove()">Previous Move</button>
+        <button class="btn btn-sm btn-info" (click)="goToNextMove()">Next Move</button>
         <br><br>
-        <button class="btn btn-sm btn-info" (click)="board.getBoardTree().moveUp();">Up</button>
-        <button class="btn btn-sm btn-info" (click)="board.getBoardTree().moveDown();">Down</button>
+        <button class="btn btn-sm btn-info" (click)="goToPreviousVariation()">Previous Variation</button>
+        <button class="btn btn-sm btn-info" (click)="goToNextVariation()">Next Variation</button>
+        <br><br>
+        <button class="btn btn-sm btn-info" (click)="goToFirst()">First Move</button>
+        <button class="btn btn-sm btn-info" (click)="goToMainLast()">Last Move (on main)</button>
       </div>
 
-      <p><strong>Current sequence:</strong></p>
-      <div class="sequence">{{board.getBoardTree().getCurrentSequenceString()}}</div>
+      <!--<p><strong>Current sequence:</strong></p>
+      <div class="sequence">{{board.sequencerTree.getCurrentSequenceString()}}</div>-->
 
-      <p><strong>Tree represetation:</strong></p>
-      <div id="tree_representation" [innerHTML]="board.getBoardTree().toString()"></div>
+      <h3>Tree represetation:</h3>
+      <div id="tree_representation" [innerHTML]="board.sequencerTree.toString()"></div>
     </div>
     <div class="clearfix"></div>
   </div>

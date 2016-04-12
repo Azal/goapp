@@ -87,8 +87,14 @@ export class Board {
   }
 
   /* Getters and Setters */
-  public get tree() : SequencerTree {
+  public get sequencerTree(): SequencerTree {
     return this._sequencer_tree;
+  }
+
+  public set sequencerTree(tree: SequencerTree) {
+    this._sequencer_tree = tree;
+
+    this._sequencer_tree.goToFirst();
   }
 
   public getName(): string {
@@ -113,10 +119,6 @@ export class Board {
 
   public getCell(x: number, y: number): Cell {
     return this._board[x][y];
-  }
-
-  public getBoardTree(): SequencerTree {
-    return this._sequencer_tree;
   }
 
   public getNeighborsOf(cell: Cell): Cell[] {
@@ -218,10 +220,14 @@ export class Board {
     this._seen_color_white = seen_color_white;
   }
 
+  public changeTurn(): void {
+    this._current_turn = (this._current_turn === "black") ? "white" : "black";
+  }
+
   /** Logic for passes moves */
   public passTurn(): void {
     this._followed_turn_passes += 1;
-    this._current_turn = (this._current_turn === "black") ? "white" : "black";
+    this.changeTurn();
 
     /* Updating Sequencer Tree */
     this._sequencer_tree.addPassSequence();
@@ -239,28 +245,28 @@ export class Board {
 
     switch (handicap) {
       case 2:
-        this.playSequence("free", [[16, 4], [4, 16]]);
+        this.playSequence("free", [[16, 4], [4, 16]], "board_coords", true);
         break;
       case 3:
-        this.playSequence("free", [[16, 4], [4, 16], [16, 16]]);
+        this.playSequence("free", [[16, 4], [4, 16], [16, 16]], "board_coords", true);
         break;
       case 4:
-        this.playSequence("free", [[16, 4], [4, 16], [16, 16], [4, 4]]);
+        this.playSequence("free", [[16, 4], [4, 16], [16, 16], [4, 4]], "board_coords", true);
         break;
       case 5:
-        this.playSequence("free", [[16, 4], [4, 16], [16, 16], [4, 4], [10, 10]]);
+        this.playSequence("free", [[16, 4], [4, 16], [16, 16], [4, 4], [10, 10]], "board_coords", true);
         break;
       case 6:
-        this.playSequence("free", [[16, 4], [4, 16], [16, 16], [4, 4], [4, 10], [16, 10]]);
+        this.playSequence("free", [[16, 4], [4, 16], [16, 16], [4, 4], [4, 10], [16, 10]], "board_coords", true);
         break;
       case 7:
-        this.playSequence("free", [[16, 4], [4, 16], [16, 16], [4, 4], [4, 10], [16, 10], [10, 10]]);
+        this.playSequence("free", [[16, 4], [4, 16], [16, 16], [4, 4], [4, 10], [16, 10], [10, 10]], "board_coords", true);
         break;
       case 8:
-        this.playSequence("free", [[16, 4], [4, 16], [16, 16], [4, 4], [4, 10], [16, 10], [10, 4], [10, 16]]);
+        this.playSequence("free", [[16, 4], [4, 16], [16, 16], [4, 4], [4, 10], [16, 10], [10, 4], [10, 16]], "board_coords", true);
         break;
       case 9:
-        this.playSequence("free", [[16, 4], [4, 16], [16, 16], [4, 4], [4, 10], [16, 10], [10, 4], [10, 16], [10, 10]]);
+        this.playSequence("free", [[16, 4], [4, 16], [16, 16], [4, 4], [4, 10], [16, 10], [10, 4], [10, 16], [10, 10]], "board_coords", true);
         break;
       default:
         break;
@@ -268,7 +274,7 @@ export class Board {
   }
 
   /** Play a stone in the Board */
-  public playAt(x: number, y: number): void {
+  public playAt(x: number, y: number, save: boolean): void {
     if (this._mode === "free") {
       var tool: string = this.getTool();
       var color: string = "";
@@ -290,8 +296,10 @@ export class Board {
           this._possible_kos = [];
           this._followed_turn_passes = 0;
 
-          /* Updating Sequencer Tree */
-          this._sequencer_tree.addSequenceGroupElement("stone", x, y, color);
+          /* Updating Sequencer Tree: DEPRECATED! */
+          // if (save) {
+          //   this._sequencer_tree.addSequenceGroupElement("stone", x, y, color);
+          // }
         } else {
           console.log("Invalid move at: (" + x + ", " + y + ") by a " + color + " stone!");
         }
@@ -305,7 +313,9 @@ export class Board {
         this._followed_turn_passes = 0;
 
         /* Updating Sequencer Tree */
-        this._sequencer_tree.addSequence("stone", x, y, this._current_turn);
+        if (save) {
+          this._sequencer_tree.addSequence("stone", x, y, this._current_turn);
+        }
 
         if (!this._skip_ko_clean_up) {
           this._possible_kos = [];
@@ -314,11 +324,7 @@ export class Board {
         if (this._extra_turns > 1) {
           this._extra_turns -= 1;
         } else {
-          if (this._current_turn === "black") {
-            this._current_turn = "white";
-          } else if (this._current_turn === "white") {
-            this._current_turn = "black";
-          }
+          this.changeTurn();
         }
       } else {
         console.log("Invalid move at: (" + x + ", " + y + ") by a " + this._current_turn + " stone!");
@@ -408,7 +414,7 @@ export class Board {
   }
 
   /** Reset Board */
-  public reset(): void {
+  public reset(full: boolean): void {
     var i: number, j: number;
 
     for (i = 0; i < this._size; ++i) {
@@ -430,7 +436,10 @@ export class Board {
     this._skip_ko_clean_up = false;
     this._black_captured_on_board = 0;
     this._white_captured_on_board = 0;
-    this._sequencer_tree.reset();
+
+    if (full) {
+      this._sequencer_tree.reset();
+    }
   }
 
   /** Remove all marked stones */
@@ -501,16 +510,15 @@ export class Board {
   }
 
   /** Play a sequence with coords_style: board_coords or matrix_coords */
-  public playSequence(style: string, moves: [number, number][], coords_style?: string): void {
+  public playSequence(style: string, moves: [number, number][], coords_style: string, save: boolean): void {
     var i: number;
     var current_style: string = this._mode;
-    var coords_style: string = coords_style || "board_coords"
     var coordsFix: number = (coords_style === "board_coords") ? 1: 0;
 
     this._mode = style;
 
     for (i = 0; i < moves.length; ++i) {
-      this.playAt(moves[i][0] - coordsFix, moves[i][1] - coordsFix);
+      this.playAt(moves[i][0] - coordsFix, moves[i][1] - coordsFix, save);
     }
 
     this._mode = current_style;

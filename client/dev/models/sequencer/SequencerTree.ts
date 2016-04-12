@@ -37,6 +37,14 @@ export class SequencerTree implements GenericTree<SequencerNode>, Printable {
     return this._currentNode;
   }
 
+  public get currentNodeX(): number {
+    return this._currentNode._data.x;
+  }
+
+  public get currentNodeY(): number {
+    return this._currentNode._data.y;
+  }
+
   /* BEGIN Interface methods */
   /**
    * Positionates current node due to it's key
@@ -121,7 +129,7 @@ export class SequencerTree implements GenericTree<SequencerNode>, Printable {
 
   toString(): string {
     if (this._head) {
-      return "tree:<br/>" + this._head.toString();
+      return this._head.toString_2();
     } else {
       return "";
     }
@@ -159,6 +167,7 @@ export class SequencerTree implements GenericTree<SequencerNode>, Printable {
     return this._currentNode;
   }
 
+  /* DEPRECATED! */
   public addSequenceGroupElement(moveType: string, x: number, y: number, markType: string): SequencerNode {
     let treeData: SequencerTreeData = new SequencerTreeData(moveType, markType, x, y);
     if (!treeData.valid()) {
@@ -191,6 +200,7 @@ export class SequencerTree implements GenericTree<SequencerNode>, Printable {
     return this.addSequence(moveType, x, y, markType);
   }
 
+  /* DEPRECATED! */
   public seekAndAddSequenceGroupElement(key: string, moveType: string, x: number, y: number, markType: string): SequencerNode {
     let seekResult = this.seekChild(key);
     if (!seekResult) {
@@ -226,6 +236,26 @@ export class SequencerTree implements GenericTree<SequencerNode>, Printable {
     return this._lastSequence;
   }
 
+  /** Get Sequence for Board */
+  public getCurrentSequenceForBoard(): [number, number][] {
+    let node: SequencerNode = this._currentNode;
+    let sequenceList: [number, number][] = [];
+
+    while (node && node.data) {
+      if (node.data.x && node.data.y) {
+        sequenceList.push([node.data.x, node.data.y]);
+        node = node.parent;
+      } else {
+        /* Reached to top level node:
+        /* This node has the metadata
+        /* It doesn't have normal moves, but may have labels and additionals, comments, etc */
+        break;
+      }
+    }
+
+    return sequenceList.reverse();
+  }
+
   public moveLeft() {
     if (this._currentNode && this._currentNode.previous) {
       this.replaceCurrentNode(this._currentNode.previous);
@@ -246,6 +276,18 @@ export class SequencerTree implements GenericTree<SequencerNode>, Printable {
 
   public moveDown() {
     if (this._currentNode && this._currentNode.mainChild) {
+      this.replaceCurrentNode(this._currentNode.mainChild);
+    }
+  }
+
+  public goToFirst() {
+    if (this._head) {
+      this.replaceCurrentNode(this._head);
+    }
+  }
+
+  public goToMainLast() {
+    while (this._currentNode && this._currentNode.mainChild) {
       this.replaceCurrentNode(this._currentNode.mainChild);
     }
   }

@@ -128,11 +128,7 @@ button.btn-red:hover {
 }
 
 input {
-  width: 20px;
-  text-align: center;
-  border: 0px;
-  font-size: 17px;
-  border-bottom: 1px solid;
+  padding-top: 20px;
 }
 
 .info {
@@ -140,7 +136,12 @@ input {
   font-style: italic;
 }
 
+div.node {
+  display: inline-block;
+}
+
 div.current-node {
+  display: inline-block;
   background: #666;
   font-size: 18px;
   color: #fff;

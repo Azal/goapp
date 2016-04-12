@@ -1,5 +1,7 @@
 import {Component} from 'angular2/core';
+import {SGFParser} from '../models/SGFParser'
 import {Board} from '../models/Board'
+import {SequencerTree} from "../models/sequencer/SequencerTree";
 
 @Component({
   selector: 'go-board',
@@ -15,7 +17,7 @@ export class BoardComponent {
 
   game_rules = {
     "type": "japanese",
-    "handicap": 2,
+    "handicap": 0,
     "main_time": 30,
     "byo_yomi_periods": 3,
     "byo_yomi_time": 30
@@ -35,7 +37,7 @@ export class BoardComponent {
         console.log("There isn't a stone here!");
       }
     } else {
-      this.board.playAt(x, y);
+      this.board.playAt(x, y, true);
     }
   }
 
@@ -64,7 +66,7 @@ export class BoardComponent {
   }
 
   resetBoard() {
-    this.board.reset();
+    this.board.reset(true);
     this.boardHoverPosition = [0, 0];
     this.showBoardRepresentation = false;
     this.countMessage = "";
@@ -76,11 +78,84 @@ export class BoardComponent {
       [12, 18], [17, 17], [14, 9], [4, 4], [8, 2], [3, 5], [3, 6], [16, 2], [17, 2], [13, 1], [8, 3], [6, 1], [8, 10], [12, 8], [8, 11], [8, 12], [4, 9], [5, 11], [13, 9], [13, 8], [14, 4], [14, 5], [9, 6], [15, 4], [16, 3], [13, 0], [11, 0], [8, 0], [9, 0], [7, 0], [15, 0], [14, 0], [9, 10], [10, 10], [4, 12], [5, 12], [0, 8], [1, 9], [7, 18], [7, 17], [18, 1],
       [6, 18], [8, 18], [15, 0], [4, 5], [3, 4], [2, 6]];
 
-    this.board.reset();
-    this.board.playSequence("game", exampleSequence, "matrix_coords");
+    this.board.reset(true);
+    this.board.playSequence("game", exampleSequence, "matrix_coords", true);
   }
 
   toggleBoardRepresentation() {
     this.showBoardRepresentation = ! this.showBoardRepresentation;
+  }
+
+  /* Parser for Demo */
+  onChange(event) {
+    var files = event.srcElement.files;
+
+    var reader = new FileReader();
+    var board = this.board;
+
+    reader.onload = function(e) {
+      var contents = e.target.result;
+      console.log(contents);
+
+      var tree: SequencerTree;
+      var sgfParser: SGFParser = new SGFParser(contents);
+
+      tree = sgfParser.parse();
+
+      board.sequencerTree = tree;
+    };
+
+    reader.readAsText(files[0]);
+  }
+
+  /* Just for Demo */
+  goToPreviousMove() {
+    var tree = this.board.sequencerTree;
+
+    this.board.removeFrom(tree.currentNodeX, tree.currentNodeY);
+    this.board.changeTurn();
+    tree.moveUp();
+  }
+
+  goToNextMove() {
+    var tree = this.board.sequencerTree;
+
+    tree.moveDown();
+    this.board.playAt(tree.currentNodeX, tree.currentNodeY, false);
+  }
+
+  goToPreviousVariation() {
+    var tree = this.board.sequencerTree;
+    var sequence: [number, number][];
+
+    tree.moveLeft();
+    sequence = tree.getCurrentSequenceForBoard();
+    this.board.reset(false);
+    this.board.playSequence("game", sequence, "matrix_coords", false);
+  }
+
+  goToNextVariation() {
+    var tree = this.board.sequencerTree;
+    var sequence: [number, number][];
+
+    tree.moveRight();
+    sequence = tree.getCurrentSequenceForBoard();
+    this.board.reset(false);
+    this.board.playSequence("game", sequence, "matrix_coords", false);
+  }
+
+  goToFirst() {
+    this.board.sequencerTree.goToFirst();
+    this.board.reset(false);
+  }
+
+  goToMainLast() {
+    var tree = this.board.sequencerTree;
+    var sequence: [number, number][];
+
+    tree.goToMainLast();
+    sequence = tree.getCurrentSequenceForBoard();
+    this.board.reset(false);
+    this.board.playSequence("game", sequence, "matrix_coords", false);
   }
 }

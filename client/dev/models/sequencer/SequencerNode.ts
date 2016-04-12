@@ -207,6 +207,37 @@ export class SequencerNode implements GenericNode<SequencerTreeData, SequencerNo
     }
   }
 
+  public toString_2(): string {
+    let strNode: string = "";
+
+    if (this._data) {
+      if (this._inSequence) {
+        strNode = "[" + this._data.x + "," + this._data.y + "]";
+      } else {
+        strNode = "[" + this._data.x + "," + this._data.y + "]";
+      }
+      if (this._isCurrent) {
+        strNode = "<div class='current-node node'>" + strNode + "</div>";
+      } else {
+        strNode = "<div class='node'>" + strNode + "</div>";
+      }
+
+      let childString = [];
+      for (let key in this._nodes) {
+        let node = this._nodes[key];
+        childString.push(node.toString_2());
+      }
+
+      if (childString.length == 0) {
+        return strNode;
+      } else {
+        return strNode + "<br />" + "-".repeat(this._deep) + childString.join("<br />" + "-".repeat(this._deep));
+      }
+    } else {
+      return "";
+    }
+  }
+
   print(): void {
     console.log(this.toString());
   }
